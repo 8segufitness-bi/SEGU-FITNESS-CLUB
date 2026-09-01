@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<!--
+  SEGU × MASTERCLASS — Dossier comercial de alianzas de marca
+  ---------------------------------------------------------------
+  Cómo editar este documento
+  1. FOTOGRAFÍAS → reemplazar los archivos dentro de /assets/images/
+     usando exactamente los nombres listados en /assets/images/README.md.
+     No es necesario tocar el HTML: cada <img> ya apunta al nombre correcto.
+  2. DATOS PENDIENTES → buscar el texto "POR CONFIRMAR" en este archivo.
+     Cada aparición está marcada con la clase "tbd" para identificarla
+     visualmente en el diseño (subrayado punteado).
+  3. COLOR / TIPOGRAFÍA → variables centralizadas en :root, dentro de <style>.
+  4. Este archivo no depende de ningún servidor: funciona abriendo
+     index.html directamente en el navegador.
+-->
+<html lang="es" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SEGU × Masterclass — Dossier Comercial de Alianzas</title>
+<meta name="description" content="Dossier comercial de SEGU Fitness Club: oportunidades de alianza de marca a través de las Masterclass — entrenamiento, comunidad y experiencia.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="assets/brand/segu-logo.png" type="image/png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   0. RESET
+   ============================================================ */
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
+html,body{ overflow-x:hidden; }
+body,h1,h2,h3,h4,p,dl,dd,dt,figure{ margin:0; }
+h1,h2,h3{ overflow-wrap:break-word; }
+ul,ol{ list-style:none; margin:0; padding:0; }
+img{ max-width:100%; display:block; }
+a{ color:inherit; text-decoration:none; }
+button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
+[hidden]{ display:none !important; }
+
+/* ============================================================
+   1. VARIABLES
+   ============================================================ */
+:root{
+  --c-black:#0b0b0a;
+  --c-white:#f7f6f2;
+  --c-orange:#e59407;
+  --c-orange-dim:#c07f0a;
+  --c-gray-700:#3a3937;
+  --c-gray-500:#726f68;
+  --c-gray-300:#b7b3aa;
+  --c-mist-light:#e9e6df;
+  --c-mist-dark:#1a1a18;
+
+  --ff-display:'Anton', 'Arial Narrow', Impact, sans-serif;
+  --ff-serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --ff-body:'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+
+  --edge: clamp(20px, 5vw, 72px);
+  --maxw: 1440px;
+}
+
+.theme-light{
+  --bg:var(--c-white);
+  --fg:var(--c-black);
+  --muted:var(--c-gray-500);
+  --line:rgba(11,11,10,.15);
+  --mist:var(--c-mist-light);
+}
+.theme-dark{
+  --bg:var(--c-black);
+  --fg:var(--c-white);
+  --muted:var(--c-gray-300);
+  --line:rgba(247,246,242,.18);
+  --mist:var(--c-mist-dark);
+}
+
+/* ============================================================
+   2. BASE
+   ============================================================ */
+body{
+  font-family:var(--ff-body);
+  background:var(--c-black);
+  color:var(--c-white);
+  font-size:16px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+
+.section{
+  position:relative;
+  background:var(--bg);
+  color:var(--fg);
+  padding:clamp(88px,14vw,168px) 0 clamp(64px,10vw,120px);
+  overflow:hidden;
+}
+.wrap{
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:0 var(--edge);
+}
+
+.eyebrow{
+  font-family:var(--ff-body);
+  font-weight:600;
+  font-size:11px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--muted);
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.eyebrow::before{
+  content:'';
+  width:7px;height:7px;border-radius:50%;
+  background:var(--c-orange);
+  flex:none;
+}
+
+.kicker{
+  font-family:var(--ff-body);
+  font-weight:600;
+  font-size:clamp(11px,1vw,12px);
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:var(--c-orange);
+}
+
+.index-tag{
+  font-family:var(--ff-body);
+  font-weight:600;
+  font-size:12px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--muted);
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:clamp(48px,8vw,88px);
+}
+.index-tag span.n{ color:var(--fg); }
+.index-tag i{
+  display:block; width:40px; height:1px; background:var(--line);
+}
+
+h2.h-title{
+  font-family:var(--ff-display);
+  font-weight:400;
+  text-transform:uppercase;
+  line-height:.94;
+  letter-spacing:.005em;
+  font-size:clamp(2.4rem, 6.6vw, 5.6rem);
+}
+
+.quote{
+  font-family:var(--ff-serif);
+  font-style:italic;
+  font-weight:400;
+  line-height:1.22;
+  letter-spacing:-.005em;
+}
+
+.lede{
+  font-family:var(--ff-body);
+  font-weight:400;
+  color:var(--muted);
+  font-size:clamp(15px,1.4vw,18px);
+  line-height:1.7;
+  max-width:52ch;
+}
+
+.divider{ height:1px; background:var(--line); border:0; width:100%; }
+
+.tbd{
+  font-style:italic;
+  border-bottom:1px dashed currentColor;
+  padding-bottom:1px;
+  opacity:.8;
+  white-space:nowrap;
+}
+
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  padding:8px 14px;
+  border:1px solid var(--c-orange);
+  color:var(--c-orange);
+  border-radius:999px;
+}
+.pill::before{
+  content:'';
+  width:6px;height:6px;border-radius:50%;
+  background:var(--c-orange);
+}
+
+/* ============================================================
+   3. HEADER + NAV OVERLAY
+   ============================================================ */
+.siteheader{
+  position:fixed; inset:0 0 auto 0; z-index:60;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:20px var(--edge);
+  color:#f7f6f2;
+  transition:background-color .5s ease, color .5s ease, border-color .5s ease;
+  border-bottom:1px solid transparent;
+}
+.siteheader.is-solid{
+  background:rgba(11,11,10,.86);
+  backdrop-filter:blur(10px);
+  border-bottom-color:rgba(247,246,242,.12);
+}
+.siteheader .brand{
+  display:flex; align-items:center; gap:10px;
+  font-family:var(--ff-body); font-weight:700;
+  font-size:13px; letter-spacing:.24em; text-transform:uppercase;
+}
+.siteheader .brand img{ width:22px; height:22px; }
+.siteheader .navbtn{
+  display:flex; align-items:center; gap:10px;
+  font-size:11px; font-weight:600; letter-spacing:.22em; text-transform:uppercase;
+}
+.siteheader .navbtn .bars{ display:flex; flex-direction:column; gap:4px; width:20px; }
+.siteheader .navbtn .bars span{ height:1px; background:currentColor; display:block; transition:transform .35s ease, opacity .35s ease; }
+body.nav-open .siteheader .navbtn .bars span:nth-child(1){ transform:translateY(5px) rotate(45deg); }
+body.nav-open .siteheader .navbtn .bars span:nth-child(2){ opacity:0; }
+body.nav-open .siteheader .navbtn .bars span:nth-child(3){ transform:translateY(-5px) rotate(-45deg); }
+
+.pageno{
+  position:fixed; right:var(--edge); bottom:22px; z-index:55;
+  font-size:11px; letter-spacing:.18em; font-weight:600;
+  color:rgba(247,246,242,.7);
+  mix-blend-mode:difference;
+  pointer-events:none;
+}
+.progress{
+  position:fixed; top:0; left:0; height:2px; background:var(--c-orange);
+  z-index:70; width:0%; transition:width .12s linear;
+}
+
+.navoverlay{
+  position:fixed; inset:0; z-index:65;
+  background:#0b0b0a; color:#f7f6f2;
+  display:flex; flex-direction:column; justify-content:center;
+  padding:0 var(--edge);
+  opacity:0; visibility:hidden; transform:translateY(-12px);
+  transition:opacity .5s ease, transform .5s ease, visibility 0s linear .5s;
+}
+body.nav-open .navoverlay{
+  opacity:1; visibility:visible; transform:translateY(0);
+  transition:opacity .5s ease, transform .5s ease, visibility 0s;
+}
+.navoverlay ol{ max-width:var(--maxw); margin:0 auto; width:100%; }
+.navoverlay li{ border-top:1px solid rgba(247,246,242,.14); }
+.navoverlay li:last-child{ border-bottom:1px solid rgba(247,246,242,.14); }
+.navoverlay a{
+  display:flex; align-items:baseline; gap:24px;
+  padding:16px 4px;
+  font-family:var(--ff-display); text-transform:uppercase;
+  font-size:clamp(1.6rem,4.4vw,3.1rem); line-height:1;
+  transition:color .3s ease, padding-left .3s ease;
+}
+.navoverlay a .num{ font-family:var(--ff-body); font-weight:600; font-size:13px; letter-spacing:.14em; color:var(--c-orange); }
+.navoverlay a:hover{ color:var(--c-orange); padding-left:16px; }
+.navoverlay .navoverlay__meta{
+  max-width:var(--maxw); margin:28px auto 0; width:100%;
+  font-size:12px; color:rgba(247,246,242,.55); letter-spacing:.08em;
+}
+
+/* ============================================================
+   4. PHOTO COMPONENT
+   ============================================================ */
+.photo{
+  position:relative; overflow:hidden; background:var(--mist);
+  isolation:isolate;
+}
+.photo--wide{ aspect-ratio:3/2; }
+.photo--tall{ aspect-ratio:3/4; }
+.photo--square{ aspect-ratio:1/1; }
+.photo--panorama{ aspect-ratio:16/9; }
+.photo--fill{ position:absolute; inset:0; aspect-ratio:auto; }
+
+.photo img{
+  width:100%; height:100%; object-fit:cover; display:block;
+  filter:grayscale(1) contrast(1.06);
+  transform:scale(1.001);
+  transition:transform 1.4s cubic-bezier(.16,1,.3,1), filter .8s ease;
+}
+@media (hover:hover){
+  .photo:hover img{ transform:scale(1.045); filter:grayscale(.25) contrast(1.08); }
+}
+
+.photo::after{
+  content:'';
+  position:absolute; inset:0;
+  border:1px solid rgba(255,255,255,.08);
+  pointer-events:none;
+}
+
+.photo__caption,.photo__file{ display:none; }
+
+.photo.is-empty img{ display:none; }
+.photo.is-empty{
+  display:flex; align-items:center; justify-content:center; text-align:center;
+  border:1px solid var(--line);
+}
+.photo.is-empty::before{
+  content:'Fotografía SEGU — pendiente';
+  font-family:var(--ff-body); font-weight:600; font-size:10px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--muted);
+  position:absolute; top:16px; left:16px;
+}
+.photo.is-empty .photo__caption{
+  display:block;
+  font-family:var(--ff-serif); font-style:italic; color:var(--muted);
+  font-size:clamp(14px,1.6vw,18px); padding:0 24px; max-width:28ch;
+}
+.photo.is-empty .photo__file{
+  display:block;
+  position:absolute; bottom:14px; left:16px; right:16px;
+  font-family:'SFMono-Regular', Consolas, monospace; font-size:10px;
+  color:var(--muted); opacity:.6; text-align:left;
+}
+
+/* The hero photo sits full-bleed behind the headline and the fixed header —
+   keep its placeholder state out of their way instead of the generic centered caption. */
+.hero .photo.is-empty::before{ top:96px; }
+.hero .photo.is-empty .photo__caption{ display:none; }
+
+/* ============================================================
+   5. REVEAL / MOTION
+   ============================================================ */
+.js .reveal{ opacity:0; transform:translateY(28px); transition:opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1); }
+.js .reveal.is-visible{ opacity:1; transform:translateY(0); }
+.js .reveal-group > *{ transition-delay:calc(var(--i,0) * 90ms); }
+
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  .js .reveal{ opacity:1 !important; transform:none !important; transition:none !important; }
+  .photo img{ transition:none !important; }
+}
+
+/* ============================================================
+   6. SECTION 01 — PORTADA
+   ============================================================ */
+.hero{
+  min-height:100svh;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  padding-top:0; padding-bottom:clamp(28px,5vw,48px);
+}
+.hero .photo{ position:absolute; inset:0; z-index:0; }
+.hero .photo img{ filter:grayscale(1) contrast(1.08) brightness(.92); }
+.hero__scrim{ position:absolute; inset:0; background:rgba(8,8,7,.5); z-index:1; }
+.hero__content{ position:relative; z-index:2; }
+
+.hero__kicker{ margin-bottom:clamp(24px,5vw,44px); color:rgba(247,246,242,.85); }
+.hero__kicker .eyebrow::before{ background:var(--c-orange); }
+
+.hero__title{
+  font-family:var(--ff-display); text-transform:uppercase; color:#f7f6f2;
+  line-height:.86; letter-spacing:.005em;
+  font-size:clamp(2.15rem, 10.5vw, 9.5rem);
+  display:flex; flex-wrap:wrap; align-items:center; gap:clamp(10px,2vw,26px);
+}
+.hero__title .x{ color:var(--c-orange); font-size:.6em; }
+
+.hero__quote{
+  margin-top:clamp(28px,5vw,52px);
+  color:#f7f6f2;
+  font-size:clamp(1.3rem, 3vw, 2.1rem);
+  max-width:20ch;
+}
+
+.hero__meta{
+  margin-top:clamp(48px,8vw,88px);
+  display:flex; justify-content:space-between; align-items:flex-end; gap:24px;
+  border-top:1px solid rgba(247,246,242,.22);
+  padding-top:18px;
+  color:rgba(247,246,242,.8);
+  font-size:12px; letter-spacing:.1em;
+}
+.hero__meta .scroll{
+  display:flex; align-items:center; gap:10px; text-transform:uppercase; font-weight:600;
+}
+.hero__meta .scroll .arrow{ animation:bob 2.2s ease-in-out infinite; }
+@keyframes bob{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(5px); } }
+
+/* ============================================================
+   7. SECTION 02 — SEGU
+   ============================================================ */
+.segu__grid{
+  display:grid; grid-template-columns:1.1fr .9fr; gap:clamp(32px,6vw,80px);
+  align-items:start;
+}
+.segu__intro{ grid-column:1; }
+.segu__loc{
+  font-family:var(--ff-display); text-transform:uppercase; line-height:.92;
+  font-size:clamp(2.6rem,5.4vw,4.6rem);
+  margin-top:clamp(28px,5vw,48px);
+}
+.segu__loc small{
+  display:block; font-family:var(--ff-body); font-weight:600; font-size:13px;
+  letter-spacing:.18em; color:var(--c-orange); margin-bottom:10px;
+}
+.segu__note{
+  margin-top:28px; font-family:var(--ff-serif); font-style:italic;
+  color:var(--muted); font-size:clamp(15px,1.6vw,19px); max-width:46ch;
+}
+
+.segu__media{ grid-column:2; display:grid; gap:20px; }
+.segu__media .photo--wide{ }
+.segu__media .photo--tall{ margin-left:12%; }
+
+.segu__lists{
+  margin-top:clamp(64px,10vw,110px);
+  display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,5vw,60px);
+  border-top:1px solid var(--line);
+  padding-top:clamp(28px,4vw,44px);
+}
+.segu__list h4{
+  font-family:var(--ff-body); font-weight:600; font-size:12px;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--c-orange);
+  margin-bottom:18px;
+}
+.segu__list ul li{
+  padding:11px 0; border-top:1px solid var(--line);
+  font-size:clamp(14px,1.4vw,16px);
+  display:flex; justify-content:space-between; gap:12px;
+}
+.segu__list ul li:last-child{ border-bottom:1px solid var(--line); }
+
+/* ============================================================
+   8. SECTION 03 — MASTERCLASS
+   ============================================================ */
+.mc__formula{
+  display:flex; flex-wrap:wrap; align-items:center; gap:clamp(10px,2vw,22px);
+  margin:clamp(40px,7vw,72px) 0;
+  font-family:var(--ff-display); text-transform:uppercase; line-height:1;
+  font-size:clamp(1.5rem,4.2vw,3.1rem);
+}
+.mc__formula span.plus{ color:var(--c-orange); font-size:.7em; }
+.mc__formula span.word{ transition:color .3s ease; }
+.mc__formula span.word.is-brand{ color:var(--c-orange); }
+@media (hover:hover){ .mc__formula span.word:hover{ color:var(--c-orange); } }
+
+.mc__quote{ font-size:clamp(1.5rem,3.6vw,2.6rem); max-width:22ch; margin-top:8px; }
+
+.mc__media{
+  margin-top:clamp(56px,9vw,96px);
+  display:grid; grid-template-columns:1.4fr .8fr; gap:clamp(18px,3vw,28px);
+}
+.mc__media .photo--wide{ aspect-ratio:4/3; }
+.mc__media .photo--tall{ align-self:end; }
+
+/* ============================================================
+   9. SECTION 04 — SEPTIEMBRE
+   ============================================================ */
+.sept__title{ margin-top:18px; }
+.sept__concept{ margin-top:24px; }
+.sept__tags{
+  margin-top:28px; display:flex; flex-wrap:wrap; gap:10px 28px;
+  font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+}
+.sept__tags span{ position:relative; padding-left:16px; }
+.sept__tags span::before{ content:''; position:absolute; left:0; top:50%; width:8px; height:1px; background:var(--c-orange); transform:translateY(-50%); }
+
+.sept__regions{
+  margin-top:clamp(56px,9vw,100px);
+  display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(18px,3vw,28px);
+}
+.region h3{
+  font-family:var(--ff-display); text-transform:uppercase; font-size:clamp(1.6rem,3vw,2.2rem);
+  margin:16px 0 4px;
+}
+.region .idx{ font-size:11px; letter-spacing:.2em; color:var(--c-orange); font-weight:600; }
+.region p{ color:var(--muted); font-size:14px; margin-top:6px; }
+
+.sept__palette{
+  margin-top:clamp(48px,8vw,80px);
+  display:flex; align-items:center; gap:16px;
+  border-top:1px solid var(--line); padding-top:20px;
+  font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+}
+.swatches{ display:flex; gap:6px; }
+.swatches i{ width:16px; height:16px; border-radius:50%; border:1px solid var(--line); display:block; }
+
+/* ============================================================
+   10. SECTION 05 — CALENDARIO
+   ============================================================ */
+.cal__sub{ margin-top:20px; }
+.cal__list{ margin-top:clamp(56px,9vw,96px); display:flex; flex-direction:column; }
+.datecard{
+  position:relative;
+  border-top:1px solid var(--line);
+  padding:clamp(36px,6vw,64px) 0;
+  display:grid; grid-template-columns:.85fr 1.15fr; gap:clamp(28px,5vw,64px);
+  align-items:center;
+}
+.cal__list .datecard:last-child{ border-bottom:1px solid var(--line); }
+.datecard--main{
+  background:var(--c-black); color:var(--c-white);
+  margin:0 calc(var(--edge) * -1);
+  padding-left:var(--edge); padding-right:var(--edge);
+  border-color:rgba(247,246,242,.18);
+  --line:rgba(247,246,242,.18); --muted:var(--c-gray-300);
+}
+.datecard__ghost{
+  position:absolute; top:clamp(10px,2vw,24px); right:0;
+  font-family:var(--ff-display); font-size:clamp(6rem,14vw,11rem);
+  line-height:1; color:currentColor; opacity:.06; pointer-events:none;
+  z-index:0;
+}
+.datecard__body{ position:relative; z-index:1; }
+.datecard__body .eyebrow{ margin-bottom:14px; }
+.datecard__day{
+  font-family:var(--ff-display); text-transform:uppercase; line-height:.9;
+  font-size:clamp(2.4rem,5.4vw,4.4rem);
+  display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+}
+.datecard__meta{
+  margin-top:clamp(24px,4vw,36px);
+  display:grid; grid-template-columns:repeat(2,1fr); gap:18px 24px;
+  max-width:520px;
+}
+.datecard__meta dt{ font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.datecard__meta dd{ font-size:clamp(14px,1.5vw,17px); font-weight:500; }
+.datecard__media{ order:2; }
+.datecard__media .photo{ }
+
+/* ============================================================
+   11. SECTION 06 — EVENTO PRINCIPAL
+   ============================================================ */
+.evento{ }
+.evento__top{ display:flex; flex-direction:column; align-items:flex-start; gap:22px; }
+.evento__title{ margin-top:6px; }
+.evento__lede{ margin-top:22px; color:var(--muted); }
+
+.evento__stat{
+  margin-top:clamp(48px,8vw,88px);
+  display:grid; grid-template-columns:auto 1fr; gap:clamp(20px,4vw,40px);
+  align-items:end; border-top:1px solid var(--line); padding-top:clamp(28px,4vw,40px);
+}
+.evento__stat .num{
+  font-family:var(--ff-display); color:var(--c-orange); line-height:.85;
+  font-size:clamp(4.5rem,13vw,10rem);
+}
+.evento__stat .cap{ font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); max-width:26ch; padding-bottom:1.2rem; }
+
+.evento__tags{ margin-top:36px; display:flex; flex-wrap:wrap; gap:12px; }
+.evento__tags span{
+  font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+  padding:9px 16px; border:1px solid var(--line); border-radius:999px;
+}
+
+.evento__media{
+  margin-top:clamp(56px,9vw,100px);
+  display:grid; grid-template-columns:1.6fr 1fr; gap:clamp(18px,3vw,26px);
+}
+.evento__media .photo--panorama{ }
+.evento__media .duo{ display:grid; grid-template-rows:1fr 1fr; gap:clamp(18px,3vw,26px); }
+
+/* ============================================================
+   12. SECTION 07 — OPORTUNIDADES
+   ============================================================ */
+.opp__grid{
+  margin-top:clamp(56px,9vw,96px);
+  display:grid; grid-template-columns:1fr 1fr; column-gap:clamp(28px,5vw,64px);
+}
+.opp{
+  border-top:1px solid var(--line);
+  padding:clamp(28px,4vw,40px) 0;
+  display:grid; grid-template-columns:auto 1fr; gap:clamp(18px,3vw,28px);
+  align-items:baseline;
+}
+.opp:nth-child(5),.opp:nth-child(6){ border-bottom:1px solid var(--line); }
+.opp__num{
+  font-family:var(--ff-display); font-size:clamp(2.2rem,4vw,3.4rem);
+  color:transparent; -webkit-text-stroke:1px var(--line);
+  line-height:1;
+}
+.theme-light .opp__num{ -webkit-text-stroke:1px rgba(11,11,10,.35); }
+.theme-dark .opp__num{ -webkit-text-stroke:1px rgba(247,246,242,.35); }
+.opp:hover .opp__num{ color:var(--c-orange); -webkit-text-stroke:1px var(--c-orange); transition:color .3s, -webkit-text-stroke .3s; }
+.opp__title{ font-family:var(--ff-display); text-transform:uppercase; font-size:clamp(1.3rem,2vw,1.7rem); }
+.opp__desc{ margin-top:8px; color:var(--muted); font-size:14px; max-width:38ch; }
+
+/* ============================================================
+   13. SECTION 08 — EJEMPLO GRD
+   ============================================================ */
+.ejemplo__head{ display:flex; flex-direction:column; gap:18px; align-items:flex-start; }
+.ejemplo__title{ display:flex; flex-wrap:wrap; align-items:center; gap:.35em; margin-top:8px; }
+.ejemplo__title .x{ color:var(--c-orange); font-size:.6em; }
+.ejemplo__flag{
+  margin-top:18px; font-family:var(--ff-serif); font-style:italic; color:var(--muted);
+  font-size:clamp(15px,1.6vw,19px); max-width:52ch;
+}
+
+.ejemplo__body{
+  margin-top:clamp(56px,9vw,96px);
+  display:grid; grid-template-columns:1fr 1fr; gap:clamp(32px,6vw,72px);
+  align-items:start;
+}
+.ejemplo__media{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.ejemplo__media .photo:nth-child(2){ margin-top:14%; }
+
+.ejemplo__list{ }
+.ejemplo__list h4{
+  font-family:var(--ff-body); font-weight:600; font-size:12px;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--c-orange); margin-bottom:20px;
+}
+.ejemplo__list ul li{
+  padding:14px 0; border-top:1px solid var(--line);
+  font-family:var(--ff-display); text-transform:uppercase; letter-spacing:.01em;
+  font-size:clamp(1.05rem,1.8vw,1.4rem);
+}
+.ejemplo__list ul li:last-child{ border-bottom:1px solid var(--line); }
+
+.gana{
+  margin-top:clamp(80px,12vw,140px);
+  border-top:1px solid var(--line); padding-top:clamp(48px,8vw,80px);
+}
+.gana__title{ max-width:16ch; }
+.gana__row{
+  margin-top:clamp(48px,8vw,80px);
+  display:grid; grid-template-columns:repeat(5,1fr); gap:clamp(20px,3vw,28px);
+}
+.gana__item .letter{ font-family:var(--ff-display); color:var(--c-orange); font-size:2.2rem; line-height:1; }
+.gana__item h5{
+  font-family:var(--ff-body); font-weight:700; font-size:12px; letter-spacing:.14em;
+  text-transform:uppercase; margin:14px 0 8px;
+}
+.gana__item p{ font-size:13px; color:var(--muted); line-height:1.6; }
+
+/* ============================================================
+   14. SECTION 09 — CIERRE
+   ============================================================ */
+.cierre{ }
+.cierre__title{ margin-top:16px; }
+.cierre__copy{ margin-top:clamp(28px,5vw,44px); display:flex; flex-direction:column; gap:18px; max-width:56ch; }
+.cierre__copy p{ font-family:var(--ff-serif); font-style:italic; font-size:clamp(1.2rem,2.4vw,1.7rem); line-height:1.4; }
+
+.cierre__media{ margin-top:clamp(56px,9vw,96px); }
+
+.contact{
+  margin-top:clamp(56px,9vw,96px);
+  border-top:1px solid var(--line); padding-top:clamp(40px,6vw,64px);
+  display:grid; grid-template-columns:1fr 1fr; gap:clamp(32px,6vw,64px);
+}
+.contact__brand{
+  font-family:var(--ff-display); text-transform:uppercase; line-height:1;
+  font-size:clamp(1.8rem,3.6vw,3rem);
+}
+.contact__addr{ margin-top:14px; color:var(--muted); font-size:15px; line-height:1.7; }
+.contact__ig{ display:inline-flex; align-items:center; gap:8px; margin-top:18px; font-weight:600; letter-spacing:.04em; }
+.contact__ig::after{ content:'→'; transition:transform .3s ease; }
+.contact__ig:hover::after{ transform:translateX(6px); }
+
+.contact__list dt{ font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); }
+.contact__list div{ padding:16px 0; border-top:1px solid var(--line); display:flex; justify-content:space-between; align-items:baseline; gap:16px; flex-wrap:wrap; }
+.contact__list div:last-child{ border-bottom:1px solid var(--line); }
+.contact__list dd{ font-size:16px; font-weight:500; }
+
+.sitefooter{
+  border-top:1px solid var(--line); margin-top:clamp(56px,9vw,96px); padding-top:24px;
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  font-size:11px; letter-spacing:.08em; color:var(--muted);
+}
+
+/* ============================================================
+   15. RESPONSIVE
+   ============================================================ */
+@media (max-width:960px){
+  .segu__grid{ grid-template-columns:1fr; }
+  .segu__intro{ grid-column:1; }
+  .segu__media{ grid-column:1; margin-top:32px; }
+  .segu__media .photo--tall{ margin-left:0; }
+  .segu__lists{ grid-template-columns:1fr; }
+
+  .mc__media{ grid-template-columns:1fr; }
+  .mc__media .photo--tall{ display:none; }
+
+  .sept__regions{ grid-template-columns:1fr 1fr; }
+
+  .datecard{ grid-template-columns:1fr; }
+  .datecard__media{ order:1; }
+  .datecard__body{ order:2; }
+  .datecard__ghost{ font-size:5rem; top:6px; }
+
+  .evento__media{ grid-template-columns:1fr; }
+  .evento__media .duo{ grid-template-columns:1fr 1fr; grid-template-rows:auto; }
+
+  .opp__grid{ grid-template-columns:1fr; }
+
+  .ejemplo__body{ grid-template-columns:1fr; }
+  .gana__row{ grid-template-columns:1fr 1fr; }
+
+  .contact{ grid-template-columns:1fr; }
+}
+@media (max-width:600px){
+  .sept__regions{ grid-template-columns:1fr; }
+  .gana__row{ grid-template-columns:1fr; }
+  .datecard__meta{ grid-template-columns:1fr 1fr; }
+  .hero__meta{ flex-direction:column; align-items:flex-start; gap:14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<header class="siteheader" id="siteheader">
+  <a href="#top" class="brand"><img src="assets/brand/segu-logo.png" alt="SEGU"> SEGU × Masterclass</a>
+  <button class="navbtn" id="navtoggle" aria-expanded="false" aria-controls="navoverlay">
+    <span class="bars"><span></span><span></span><span></span></span>
+    <span id="navtoggle-label">Índice</span>
+  </button>
+</header>
+
+<nav class="navoverlay" id="navoverlay">
+  <ol>
+    <li><a href="#s01" data-close><span class="num">01</span>Portada</a></li>
+    <li><a href="#s02" data-close><span class="num">02</span>SEGU</a></li>
+    <li><a href="#s03" data-close><span class="num">03</span>Masterclass</a></li>
+    <li><a href="#s04" data-close><span class="num">04</span>Septiembre</a></li>
+    <li><a href="#s05" data-close><span class="num">05</span>Calendario</a></li>
+    <li><a href="#s06" data-close><span class="num">06</span>Evento&nbsp;principal</a></li>
+    <li><a href="#s07" data-close><span class="num">07</span>Oportunidades</a></li>
+    <li><a href="#s08" data-close><span class="num">08</span>Ejemplo</a></li>
+    <li><a href="#s09" data-close><span class="num">09</span>Cierre</a></li>
+  </ol>
+  <p class="navoverlay__meta">SEGU Fitness Club — Quinta 262, Viña del Mar, Chile</p>
+</nav>
+
+<div class="pageno" id="pageno">01 / 09</div>
+
+<main id="top">
+
+  <!-- ============================================================
+       01 — PORTADA
+  ============================================================ -->
+  <section class="section theme-dark hero" id="s01" data-title="Portada">
+    <figure class="photo" aria-hidden="true" data-caption="Portada — SEGU Fitness Club">
+      <img src="assets/images/01-portada-hero.jpg" alt="Comunidad SEGU entrenando en una Masterclass" loading="eager" fetchpriority="high" onerror="this.closest('.photo').classList.add('is-empty')">
+      <span class="photo__caption">Portada — SEGU Fitness Club</span>
+      <span class="photo__file">assets/images/01-portada-hero.jpg</span>
+    </figure>
+    <div class="hero__scrim" aria-hidden="true"></div>
+
+    <div class="wrap hero__content">
+      <div class="hero__kicker reveal">
+        <p class="eyebrow">Dossier comercial · Alianzas de marca</p>
+      </div>
+
+      <h1 class="hero__title reveal">
+        <span>SEGU</span><span class="x">×</span><span>MASTERCLASS</span>
+      </h1>
+
+      <p class="hero__quote quote reveal">
+        Las marcas no vienen a poner su logo.<br>Vienen a crear una experiencia.
+      </p>
+
+      <div class="hero__meta reveal">
+        <span>Quinta 262 — Viña del Mar, Chile</span>
+        <span class="scroll">Descubre el dossier <span class="arrow">↓</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       02 — SEGU
+  ============================================================ -->
+  <section class="section theme-light" id="s02" data-title="SEGU">
+    <div class="wrap">
+      <div class="index-tag"><span class="n">02</span><i></i>SEGU</div>
+
+      <div class="segu__grid">
+        <div class="segu__intro reveal">
+          <h2 class="h-title">Un ecosistema de fitness, wellness y comunidad.</h2>
+          <p class="lede" style="margin-top:24px;">
+            SEGU Fitness Club es un espacio de entrenamiento y bienestar donde el ejercicio,
+            el descanso y la comunidad conviven bajo un mismo techo.
+          </p>
+
+          <div class="segu__loc">
+            <small>Ubicación</small>
+            Quinta 262<br>Viña del Mar
+          </div>
+
+          <p class="segu__note reveal">
+            Este dossier se enfoca en las Masterclass — la puerta de entrada de las marcas
+            a la experiencia SEGU.
+          </p>
+        </div>
+
+        <div class="segu__media reveal">
+          <figure class="photo photo--wide" data-caption="El espacio SEGU">
+            <img src="assets/images/02-segu-espacio.jpg" alt="Espacio interior de SEGU Fitness Club" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+            <span class="photo__caption">El espacio SEGU</span>
+            <span class="photo__file">assets/images/02-segu-espacio.jpg</span>
+          </figure>
+          <figure class="photo photo--tall" data-caption="Comunidad SEGU">
+            <img src="assets/images/02-segu-comunidad.jpg" alt="Comunidad SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+            <span class="photo__caption">Comunidad SEGU</span>
+            <span class="photo__file">assets/images/02-segu-comunidad.jpg</span>
+          </figure>
+        </div>
+      </div>
+
+      <div class="segu__lists reveal-group">
+        <div class="segu__list reveal" style="--i:0">
+          <h4>Fitness</h4>
+          <ul>
+            <li>Sala de pesas</li>
+            <li>Cardio</li>
+            <li>Spinning</li>
+            <li>Functional</li>
+            <li>HIIT</li>
+            <li>GAP</li>
+            <li>Sculptor</li>
+            <li>Les Mills CORE</li>
+            <li>Personal Training</li>
+          </ul>
+        </div>
+        <div class="segu__list reveal" style="--i:1">
+          <h4>Wellness</h4>
+          <ul>
+            <li>Kinesiología</li>
+            <li>Medicina china</li>
+            <li>Masajes</li>
+            <li>Ventosas</li>
+            <li>Estética</li>
+            <li>Barbería</li>
+            <li>Cafetería</li>
+            <li>Co-Work</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       03 — MASTERCLASS
+  ============================================================ -->
+  <section class="section theme-dark" id="s03" data-title="Masterclass">
+    <div class="wrap">
+      <div class="index-tag"><span class="n">03</span><i></i>Masterclass</div>
+
+      <h2 class="h-title reveal">Entrenamiento + Comunidad + Experiencia</h2>
+
+      <div class="mc__formula reveal">
+        <span class="word">Entrenamiento</span><span class="plus">+</span>
+        <span class="word">Comunidad</span><span class="plus">+</span>
+        <span class="word">Experiencia</span><span class="plus">+</span>
+        <span class="word is-brand">Marcas</span><span class="plus">+</span>
+        <span class="word">Contenido</span>
+      </div>
+
+      <p class="mc__quote quote reveal">
+        Una Masterclass no es solamente una clase. Es una oportunidad para que una marca
+        interactúe directamente con una comunidad activa.
+      </p>
+
+      <div class="mc__media reveal">
+        <figure class="photo photo--wide" data-caption="Masterclass SEGU">
+          <img src="assets/images/03-masterclass-principal.jpg" alt="Masterclass SEGU en movimiento" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+          <span class="photo__caption">Masterclass SEGU</span>
+          <span class="photo__file">assets/images/03-masterclass-principal.jpg</span>
+        </figure>
+        <figure class="photo photo--tall" data-caption="Energía y comunidad">
+          <img src="assets/images/03-masterclass-detalle.jpg" alt="Detalle de energía y comunidad en una Masterclass SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+          <span class="photo__caption">Energía y comunidad</span>
+          <span class="photo__file">assets/images/03-masterclass-detalle.jpg</span>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       04 — SEPTIEMBRE — SEGU SE CHILENIZA
+  ============================================================ -->
+  <section class="section theme-light" id="s04" data-title="Septiembre">
+    <div class="wrap">
+      <div class="index-tag"><span class="n">04</span><i></i>Septiembre</div>
+
+      <p class="kicker reveal">Campaña del mes</p>
+      <h2 class="h-title sept__title reveal">SEGU se Chileniza</h2>
+      <p class="lede sept__concept reveal">
+        Una reinterpretación contemporánea de Chile a través del entrenamiento, la comunidad,
+        la gastronomía, las regiones y las experiencias.
+      </p>
+      <div class="sept__tags reveal">
+        <span>Flora chilena</span>
+        <span>Paisajes</span>
+        <span>Ingredientes regionales</span>
+        <span>Cultura chilena reinterpretada</span>
+      </div>
+
+      <div class="sept__regions reveal-group">
+        <div class="region reveal" style="--i:0">
+          <figure class="photo photo--tall" data-caption="Norte">
+            <img src="assets/images/04-chile-norte.jpg" alt="Inspiración Norte de Chile — campaña SEGU se Chileniza" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+            <span class="photo__caption">Norte</span>
+            <span class="photo__file">assets/images/04-chile-norte.jpg</span>
+          </figure>
+          <span class="idx">01</span>
+          <h3>Norte</h3>
+        </div>
+        <div class="region reveal" style="--i:1">
+          <figure class="photo photo--tall" data-caption="Centro">
+            <img src="assets/images/04-chile-centro.jpg" alt="Inspiración Centro de Chile — campaña SEGU se Chileniza" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+            <span class="photo__caption">Centro</span>
+            <span class="photo__file">assets/images/04-chile-centro.jpg</span>
+          </figure>
+          <span class="idx">02</span>
+          <h3>Centro</h3>
+        </div>
+        <div class="region reveal" style="--i:2">
+          <figure class="photo photo--tall" data-caption="Sur">
+            <img src="assets/images/04-chile-sur.jpg" alt="Inspiración Sur de Chile — campaña SEGU se Chileniza" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+            <span class="photo__caption">Sur</span>
+            <span class="photo__file">assets/images/04-chile-sur.jpg</span>
+          </figure>
+          <span class="idx">03</span>
+          <h3>Sur</h3>
+        </div>
+      </div>
+
+      <div class="sept__palette reveal">
+        <div class="swatches"><i style="background:#0b0b0a"></i><i style="background:#f7f6f2"></i><i style="background:#b7b3aa"></i><i style="background:#e59407"></i></div>
+        Negro · Blanco · Gris + acentos SEGU
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       05 — CALENDARIO
+  ============================================================ -->
+  <section class="section theme-light" id="s05" data-title="Calendario">
+    <div class="wrap">
+      <div class="index-tag"><span class="n">05</span><i></i>Calendario</div>
+
+      <h2 class="h-title reveal">Masterclass Septiembre</h2>
+      <p class="lede cal__sub reveal">Tres fechas. Tres experiencias.</p>
+
+      <div class="cal__list">
+
+        <!-- LUNES 7 -->
+        <article class="datecard reveal">
+          <span class="datecard__ghost" aria-hidden="true">07</span>
+          <div class="datecard__body">
+            <p class="eyebrow">Masterclass Septiembre</p>
+            <h3 class="datecard__day">Lunes 7</h3>
+            <dl class="datecard__meta">
+              <div><dt>Hora</dt><dd>19:00 HRS</dd></div>
+              <div><dt>Clases</dt><dd>Spinning + Sculptor</dd></div>
+              <div><dt>Tipo de experiencia</dt><dd>Clase Masterclass</dd></div>
+              <div><dt>Participantes</dt><dd class="tbd">[POR CONFIRMAR]</dd></div>
+            </dl>
+          </div>
+          <div class="datecard__media">
+            <figure class="photo photo--tall" data-caption="Lunes 7 — Spinning + Sculptor">
+              <img src="assets/images/05-lunes-spinning-sculptor.jpg" alt="Masterclass Lunes 7 — Spinning y Sculptor en SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+              <span class="photo__caption">Lunes 7 — Spinning + Sculptor</span>
+              <span class="photo__file">assets/images/05-lunes-spinning-sculptor.jpg</span>
+            </figure>
+          </div>
+        </article>
+
+        <!-- JUEVES 10 -->
+        <article class="datecard reveal">
+          <span class="datecard__ghost" aria-hidden="true">10</span>
+          <div class="datecard__body">
+            <p class="eyebrow">Masterclass Septiembre</p>
+            <h3 class="datecard__day">Jueves 10</h3>
+            <dl class="datecard__meta">
+              <div><dt>Hora</dt><dd>19:00 HRS</dd></div>
+              <div><dt>Clases</dt><dd>Pilates + Core + GAP</dd></div>
+              <div><dt>Tipo de experiencia</dt><dd>Clase Masterclass</dd></div>
+              <div><dt>Participantes</dt><dd class="tbd">[POR CONFIRMAR]</dd></div>
+            </dl>
+          </div>
+          <div class="datecard__media">
+            <figure class="photo photo--tall" data-caption="Jueves 10 — Pilates + Core + GAP">
+              <img src="assets/images/05-jueves-pilates-core-gap.jpg" alt="Masterclass Jueves 10 — Pilates, Core y GAP en SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+              <span class="photo__caption">Jueves 10 — Pilates + Core + GAP</span>
+              <span class="photo__file">assets/images/05-jueves-pilates-core-gap.jpg</span>
+            </figure>
+          </div>
+        </article>
+
+        <!-- SABADO 13 -->
+        <article class="datecard datecard--main reveal">
+          <span class="datecard__ghost" aria-hidden="true">13</span>
+          <div class="datecard__body">
+            <p class="eyebrow">Masterclass Septiembre</p>
+            <h3 class="datecard__day">Sábado 13 <span class="pill">Evento principal</span></h3>
+            <dl class="datecard__meta">
+              <div><dt>Hora</dt><dd>10:30 HRS</dd></div>
+              <div><dt>Clases</dt><dd>HIIT + Masterclass</dd></div>
+              <div><dt>Tipo de experiencia</dt><dd>Evento principal</dd></div>
+              <div><dt>Participantes</dt><dd>≈20 participantes SEGU Masters</dd></div>
+            </dl>
+          </div>
+          <div class="datecard__media">
+            <figure class="photo photo--tall" data-caption="Sábado 13 — HIIT + Masterclass">
+              <img src="assets/images/05-sabado-hiit-masterclass.jpg" alt="Masterclass Sábado 13 — HIIT y evento principal en SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+              <span class="photo__caption">Sábado 13 — HIIT + Masterclass</span>
+              <span class="photo__file">assets/images/05-sabado-hiit-masterclass.jpg</span>
+            </figure>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       06 — EVENTO PRINCIPAL
+  ============================================================ -->
+  <section class="section theme-dark" id="s06" data-title="Evento principal">
+    <div class="wrap">
+      <div class="index-tag"><span class="n">06</span><i></i>Evento principal</div>
+
+      <div class="evento__top reveal">
+        <p class="kicker">Sábado 13 · 10:30 HRS</p>
+        <h2 class="h-title evento__title">El evento principal</h2>
+        <p class="lede evento__lede">
+          Más que una clase: una experiencia completa donde entrenamiento, comunidad y marca
+          conviven en un mismo espacio.
+        </p>
+      </div>
+
+      <div class="evento__stat reveal">
+        <span class="num">≈20</span>
+        <span class="cap">Participantes SEGU Masters</span>
+      </div>
+
+      <div class="evento__tags reveal">
+        <span>HIIT + Masterclass</span>
+        <span>Parrillada</span>
+        <span>Degustación GRD</span>
+        <span>Activaciones</span>
+        <span>Dinámicas</span>
+      </div>
+
+      <div class="evento__media reveal">
+        <figure class="photo photo--panorama" data-caption="El evento principal — Sábado 13">
+          <img src="assets/images/06-evento-principal-01.jpg" alt="Evento principal SEGU, sábado 13" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+          <span class="photo__caption">El evento principal — Sábado 13</span>
+          <span class="photo__file">assets/images/06-evento-principal-01.jpg</span>
+        </figure>
+        <div class="duo">
+          <figure class="photo photo--square" data-caption="Parrillada">
+            <img src="assets/images/06-evento-principal-02.jpg" alt="Parrillada en el evento principal SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+            <span class="photo__caption">Parrillada</span>
+            <span class="photo__file">assets/images/06-evento-principal-02.jpg</span>
+          </figure>
+          <figure class="photo photo--square" data-caption="Activaciones">
+            <img src="assets/images/06-evento-principal-03.jpg" alt="Activaciones en el evento principal SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+            <span class="photo__caption">Activaciones</span>
+            <span class="photo__file">assets/images/06-evento-principal-03.jpg</span>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       07 — OPORTUNIDADES PARA MARCAS
+  ============================================================ -->
+  <section class="section theme-light" id="s07" data-title="Oportunidades">
+    <div class="wrap">
+      <div class="index-tag"><span class="n">07</span><i></i>Oportunidades</div>
+
+      <h2 class="h-title reveal">¿Cómo puede participar tu marca?</h2>
+
+      <div class="opp__grid reveal-group">
+        <div class="opp reveal" style="--i:0">
+          <span class="opp__num">01</span>
+          <div><h3 class="opp__title">Sampling</h3><p class="opp__desc">Entrega de productos o muestras a participantes.</p></div>
+        </div>
+        <div class="opp reveal" style="--i:1">
+          <span class="opp__num">02</span>
+          <div><h3 class="opp__title">Degustación</h3><p class="opp__desc">Permitir que la comunidad pruebe el producto.</p></div>
+        </div>
+        <div class="opp reveal" style="--i:2">
+          <span class="opp__num">03</span>
+          <div><h3 class="opp__title">Activación</h3><p class="opp__desc">Crear una experiencia física dentro del evento.</p></div>
+        </div>
+        <div class="opp reveal" style="--i:3">
+          <span class="opp__num">04</span>
+          <div><h3 class="opp__title">Concurso</h3><p class="opp__desc">Premios, sorteos y dinámicas de participación.</p></div>
+        </div>
+        <div class="opp reveal" style="--i:4">
+          <span class="opp__num">05</span>
+          <div><h3 class="opp__title">Contenido</h3><p class="opp__desc">Reels, fotografías, Stories y contenido colaborativo.</p></div>
+        </div>
+        <div class="opp reveal" style="--i:5">
+          <span class="opp__num">06</span>
+          <div><h3 class="opp__title">Experiencia</h3><p class="opp__desc">Crear una acción especial que conecte la marca con el concepto de la Masterclass.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       08 — EJEMPLO — GRD × SEGU
+  ============================================================ -->
+  <section class="section theme-light" id="s08" data-title="Ejemplo">
+    <div class="wrap">
+      <div class="index-tag"><span class="n">08</span><i></i>Ejemplo</div>
+
+      <div class="ejemplo__head reveal">
+        <p class="kicker">Caso de referencia</p>
+        <h2 class="h-title ejemplo__title">GRD<span class="x">×</span>SEGU</h2>
+        <p class="ejemplo__flag">Ejemplo de integración de una marca a la experiencia SEGU.</p>
+      </div>
+
+      <div class="ejemplo__body reveal">
+        <div class="ejemplo__media">
+          <figure class="photo photo--tall" data-caption="Parrillada — GRD × SEGU">
+            <img src="assets/images/08-grd-parrillada.jpg" alt="Parrillada, ejemplo de colaboración GRD y SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+            <span class="photo__caption">Parrillada</span>
+            <span class="photo__file">assets/images/08-grd-parrillada.jpg</span>
+          </figure>
+          <figure class="photo photo--tall" data-caption="Degustación — GRD × SEGU">
+            <img src="assets/images/08-grd-degustacion.jpg" alt="Degustación, ejemplo de colaboración GRD y SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+            <span class="photo__caption">Degustación</span>
+            <span class="photo__file">assets/images/08-grd-degustacion.jpg</span>
+          </figure>
+        </div>
+
+        <div class="ejemplo__list">
+          <h4>La colaboración contempló</h4>
+          <ul>
+            <li>Parrillada</li>
+            <li>Degustación</li>
+            <li>Activaciones</li>
+            <li>Dinámicas</li>
+            <li>Premios</li>
+            <li>Contenido</li>
+            <li>Lanzamiento de producto</li>
+            <li>Beneficio exclusivo para asistentes</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="gana reveal">
+        <h2 class="h-title gana__title">Tu marca gana presencia. La comunidad gana una experiencia.</h2>
+
+        <div class="gana__row reveal-group">
+          <div class="gana__item reveal" style="--i:0">
+            <span class="letter">01</span>
+            <h5>Visibilidad</h5>
+            <p>Presencia física durante la actividad.</p>
+          </div>
+          <div class="gana__item reveal" style="--i:1">
+            <span class="letter">02</span>
+            <h5>Experiencia</h5>
+            <p>Contacto directo con consumidores.</p>
+          </div>
+          <div class="gana__item reveal" style="--i:2">
+            <span class="letter">03</span>
+            <h5>Contenido</h5>
+            <p>Material audiovisual generado alrededor de la activación.</p>
+          </div>
+          <div class="gana__item reveal" style="--i:3">
+            <span class="letter">04</span>
+            <h5>Comunidad</h5>
+            <p>Interacción con personas que ya tienen interés en fitness y bienestar.</p>
+          </div>
+          <div class="gana__item reveal" style="--i:4">
+            <span class="letter">05</span>
+            <h5>Recordación</h5>
+            <p>La marca se integra a una experiencia, no solamente a una pieza gráfica.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       09 — CIERRE
+  ============================================================ -->
+  <section class="section theme-dark" id="s09" data-title="Cierre">
+    <div class="wrap">
+      <div class="index-tag"><span class="n">09</span><i></i>Cierre</div>
+
+      <p class="kicker reveal">Hablemos</p>
+      <h2 class="h-title cierre__title reveal">¿Hacemos algo juntos?</h2>
+
+      <div class="cierre__copy reveal">
+        <p>Queremos construir Masterclass donde el entrenamiento sea solamente el comienzo.</p>
+        <p>Conversemos sobre cómo podemos integrar tu marca a la próxima experiencia SEGU.</p>
+      </div>
+
+      <figure class="photo photo--panorama cierre__media reveal" data-caption="Comunidad SEGU">
+        <img src="assets/images/09-cierre-comunidad.jpg" alt="Comunidad SEGU Fitness Club" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+        <span class="photo__caption">Comunidad SEGU</span>
+        <span class="photo__file">assets/images/09-cierre-comunidad.jpg</span>
+      </figure>
+
+      <div class="contact reveal">
+        <div>
+          <p class="contact__brand">SEGU<br>Fitness Club</p>
+          <p class="contact__addr">Quinta 262<br>Viña del Mar, Chile</p>
+          <a class="contact__ig" href="https://instagram.com/segufitnesscl" target="_blank" rel="noopener">@segufitnesscl</a>
+        </div>
+
+        <dl class="contact__list">
+          <div><dt>WhatsApp</dt><dd class="tbd">[POR CONFIRMAR]</dd></div>
+          <div><dt>Email</dt><dd class="tbd">[POR CONFIRMAR]</dd></div>
+          <div><dt>Sitio web</dt><dd class="tbd">[POR CONFIRMAR]</dd></div>
+        </dl>
+      </div>
+
+      <div class="sitefooter">
+        <span>SEGU Fitness Club — Dossier comercial de alianzas</span>
+        <span>Fotografía: Henry</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+  document.documentElement.classList.replace('no-js','js');
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Header solid-on-scroll + progress bar + current page indicator */
+  var header = document.getElementById('siteheader');
+  var progress = document.getElementById('progress');
+  var pageno = document.getElementById('pageno');
+  var sections = Array.prototype.slice.call(document.querySelectorAll('.section'));
+
+  function onScroll(){
+    header.classList.toggle('is-solid', window.scrollY > 40);
+    var doc = document.documentElement;
+    var max = doc.scrollHeight - doc.clientHeight;
+    var pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+    progress.style.width = pct + '%';
+  }
+  document.addEventListener('scroll', onScroll, { passive:true });
+  onScroll();
+
+  /* Reveal-on-scroll */
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.12 });
+
+    /* Elements already inside the viewport on load (e.g. hero content) may
+       sit in a spot the observer only re-checks on the next scroll — reveal
+       those on the next frame instead of waiting on one. */
+    document.querySelectorAll('.reveal').forEach(function(el){
+      var r = el.getBoundingClientRect();
+      if(r.top < window.innerHeight && r.bottom > 0){
+        window.requestAnimationFrame(function(){ el.classList.add('is-visible'); });
+      } else {
+        io.observe(el);
+      }
+    });
+
+    /* Safety net: at the very bottom of the page there is no further scroll
+       to trigger a late observer check — force-reveal anything still hidden
+       but already on screen once max scroll is reached. */
+    window.addEventListener('scroll', function(){
+      var doc = document.documentElement;
+      var max = doc.scrollHeight - doc.clientHeight;
+      if(max - window.scrollY < 2){
+        document.querySelectorAll('.reveal:not(.is-visible)').forEach(function(el){
+          var r = el.getBoundingClientRect();
+          if(r.top < window.innerHeight && r.bottom > 0){ el.classList.add('is-visible'); }
+        });
+      }
+    }, { passive:true });
+
+    /* Current section index (bottom-right page number) */
+    var sectionIO = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          var idx = sections.indexOf(entry.target) + 1;
+          if(idx > 0){ pageno.textContent = String(idx).padStart(2,'0') + ' / 09'; }
+        }
+      });
+    }, { threshold:0.5 });
+    sections.forEach(function(s){ sectionIO.observe(s); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('is-visible'); });
+  }
+
+  /* Nav overlay */
+  var navtoggle = document.getElementById('navtoggle');
+  var navlabel = document.getElementById('navtoggle-label');
+  function closeNav(){
+    document.body.classList.remove('nav-open');
+    navtoggle.setAttribute('aria-expanded','false');
+    navlabel.textContent = 'Índice';
+  }
+  function openNav(){
+    document.body.classList.add('nav-open');
+    navtoggle.setAttribute('aria-expanded','true');
+    navlabel.textContent = 'Cerrar';
+  }
+  navtoggle.addEventListener('click', function(){
+    document.body.classList.contains('nav-open') ? closeNav() : openNav();
+  });
+  document.querySelectorAll('[data-close]').forEach(function(a){
+    a.addEventListener('click', closeNav);
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeNav();
+  });
+
+  /* Subtle parallax on large photos (desktop only, respects reduced motion) */
+  if(!reduceMotion && window.matchMedia('(min-width:781px) and (hover:hover)').matches){
+    var parallaxEls = Array.prototype.slice.call(document.querySelectorAll('.hero .photo img, .photo--panorama img'));
+    var ticking = false;
+    function updateParallax(){
+      var vh = window.innerHeight;
+      parallaxEls.forEach(function(img){
+        var rect = img.parentElement.getBoundingClientRect();
+        var center = rect.top + rect.height/2;
+        var offset = (center - vh/2) / vh; /* -0.5..0.5 roughly */
+        var translate = Math.max(-24, Math.min(24, offset * -28));
+        img.style.transform = 'translateY(' + translate.toFixed(1) + 'px) scale(1.08)';
+      });
+      ticking = false;
+    }
+    document.addEventListener('scroll', function(){
+      if(!ticking){ window.requestAnimationFrame(updateParallax); ticking = true; }
+    }, { passive:true });
+    updateParallax();
+  }
+})();
+</script>
+</body>
+</html>
