@@ -410,21 +410,15 @@ body.nav-open .navoverlay{
   display:block; font-family:var(--ff-body); font-weight:600; font-size:13px;
   letter-spacing:.18em; color:var(--c-orange); margin-bottom:10px;
 }
-.segu__note{
-  margin-top:28px; font-family:var(--ff-serif); font-style:italic;
-  color:var(--muted); font-size:clamp(15px,1.6vw,19px); max-width:46ch;
-}
-
 .segu__media{ grid-column:2; display:grid; gap:20px; }
-.segu__media .photo--wide{ }
-.segu__media .photo--tall{ margin-left:12%; }
 
 .segu__lists{
   margin-top:clamp(64px,10vw,110px);
-  display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,5vw,60px);
+  display:grid; grid-template-columns:1fr; gap:clamp(24px,5vw,60px);
   border-top:1px solid var(--line);
   padding-top:clamp(28px,4vw,44px);
 }
+.segu__list{ max-width:480px; }
 .segu__list h4{
   font-family:var(--ff-body); font-weight:600; font-size:12px;
   letter-spacing:.2em; text-transform:uppercase; color:var(--c-orange);
@@ -483,18 +477,14 @@ body.nav-open .navoverlay{
 .region .idx{ font-size:11px; letter-spacing:.2em; color:var(--c-orange); font-weight:600; }
 .region p{ color:var(--muted); font-size:14px; margin-top:6px; }
 
-.sept__palette{
-  margin-top:clamp(48px,8vw,80px);
-  display:flex; align-items:center; gap:16px;
-  border-top:1px solid var(--line); padding-top:20px;
-  font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
-}
-.swatches{ display:flex; gap:6px; }
-.swatches i{ width:16px; height:16px; border-radius:50%; border:1px solid var(--line); display:block; }
-
 /* ============================================================
-   10. SECTION 05 — CALENDARIO
+   10. CALENDARIO (fusionado dentro de la sección Septiembre)
    ============================================================ */
+.cal__intro{
+  margin-top:clamp(56px,9vw,100px);
+  border-top:1px solid var(--line);
+  padding-top:clamp(28px,4vw,44px);
+}
 .cal__sub{ margin-top:20px; }
 .cal__list{ margin-top:clamp(56px,9vw,96px); display:flex; flex-direction:column; }
 .datecard{
@@ -593,54 +583,7 @@ body.nav-open .navoverlay{
 .opp__desc{ margin-top:8px; color:var(--muted); font-size:14px; max-width:38ch; }
 
 /* ============================================================
-   13. SECTION 08 — EJEMPLO GRD
-   ============================================================ */
-.ejemplo__head{ display:flex; flex-direction:column; gap:18px; align-items:flex-start; }
-.ejemplo__title{ display:flex; flex-wrap:wrap; align-items:center; gap:.35em; margin-top:8px; }
-.ejemplo__title .x{ color:var(--c-orange); font-size:.6em; }
-.ejemplo__flag{
-  margin-top:18px; font-family:var(--ff-serif); font-style:italic; color:var(--muted);
-  font-size:clamp(15px,1.6vw,19px); max-width:52ch;
-}
-
-.ejemplo__body{
-  margin-top:clamp(56px,9vw,96px);
-  display:grid; grid-template-columns:1fr 1fr; gap:clamp(32px,6vw,72px);
-  align-items:start;
-}
-.ejemplo__media{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
-.ejemplo__media .photo:nth-child(2){ margin-top:14%; }
-
-.ejemplo__list{ }
-.ejemplo__list h4{
-  font-family:var(--ff-body); font-weight:600; font-size:12px;
-  letter-spacing:.2em; text-transform:uppercase; color:var(--c-orange); margin-bottom:20px;
-}
-.ejemplo__list ul li{
-  padding:14px 0; border-top:1px solid var(--line);
-  font-family:var(--ff-display); text-transform:uppercase; letter-spacing:.01em;
-  font-size:clamp(1.05rem,1.8vw,1.4rem);
-}
-.ejemplo__list ul li:last-child{ border-bottom:1px solid var(--line); }
-
-.gana{
-  margin-top:clamp(80px,12vw,140px);
-  border-top:1px solid var(--line); padding-top:clamp(48px,8vw,80px);
-}
-.gana__title{ max-width:16ch; }
-.gana__row{
-  margin-top:clamp(48px,8vw,80px);
-  display:grid; grid-template-columns:repeat(5,1fr); gap:clamp(20px,3vw,28px);
-}
-.gana__item .letter{ font-family:var(--ff-display); color:var(--c-orange); font-size:2.2rem; line-height:1; }
-.gana__item h5{
-  font-family:var(--ff-body); font-weight:700; font-size:12px; letter-spacing:.14em;
-  text-transform:uppercase; margin:14px 0 8px;
-}
-.gana__item p{ font-size:13px; color:var(--muted); line-height:1.6; }
-
-/* ============================================================
-   14. SECTION 09 — CIERRE
+   13. SECTION 07 — CIERRE
    ============================================================ */
 .cierre{ }
 .cierre__title{ margin-top:16px; }
@@ -667,6 +610,8 @@ body.nav-open .navoverlay{
 .contact__list div{ padding:16px 0; border-top:1px solid var(--line); display:flex; justify-content:space-between; align-items:baseline; gap:16px; flex-wrap:wrap; }
 .contact__list div:last-child{ border-bottom:1px solid var(--line); }
 .contact__list dd{ font-size:16px; font-weight:500; }
+.contact__list dd a{ border-bottom:1px solid var(--line); padding-bottom:2px; transition:border-color .3s ease; }
+.contact__list dd a:hover{ border-color:currentColor; }
 
 .sitefooter{
   border-top:1px solid var(--line); margin-top:clamp(56px,9vw,96px); padding-top:24px;
@@ -681,8 +626,6 @@ body.nav-open .navoverlay{
   .segu__grid{ grid-template-columns:1fr; }
   .segu__intro{ grid-column:1; }
   .segu__media{ grid-column:1; margin-top:32px; }
-  .segu__media .photo--tall{ margin-left:0; }
-  .segu__lists{ grid-template-columns:1fr; }
 
   .mc__media{ grid-template-columns:1fr; }
   .mc__media .photo--tall{ display:none; }
@@ -699,14 +642,10 @@ body.nav-open .navoverlay{
 
   .opp__grid{ grid-template-columns:1fr; }
 
-  .ejemplo__body{ grid-template-columns:1fr; }
-  .gana__row{ grid-template-columns:1fr 1fr; }
-
   .contact{ grid-template-columns:1fr; }
 }
 @media (max-width:600px){
   .sept__regions{ grid-template-columns:1fr; }
-  .gana__row{ grid-template-columns:1fr; }
   .datecard__meta{ grid-template-columns:1fr 1fr; }
   .hero__meta{ flex-direction:column; align-items:flex-start; gap:14px; }
 }
@@ -730,16 +669,14 @@ body.nav-open .navoverlay{
     <li><a href="#s02" data-close><span class="num">02</span>SEGU</a></li>
     <li><a href="#s03" data-close><span class="num">03</span>Masterclass</a></li>
     <li><a href="#s04" data-close><span class="num">04</span>Septiembre</a></li>
-    <li><a href="#s05" data-close><span class="num">05</span>Calendario</a></li>
-    <li><a href="#s06" data-close><span class="num">06</span>Evento&nbsp;principal</a></li>
-    <li><a href="#s07" data-close><span class="num">07</span>Oportunidades</a></li>
-    <li><a href="#s08" data-close><span class="num">08</span>Ejemplo</a></li>
-    <li><a href="#s09" data-close><span class="num">09</span>Cierre</a></li>
+    <li><a href="#s05" data-close><span class="num">05</span>Evento&nbsp;principal</a></li>
+    <li><a href="#s06" data-close><span class="num">06</span>Oportunidades</a></li>
+    <li><a href="#s07" data-close><span class="num">07</span>Cierre</a></li>
   </ol>
   <p class="navoverlay__meta">SEGU Fitness Club — Quinta 262, Viña del Mar, Chile</p>
 </nav>
 
-<div class="pageno" id="pageno">01 / 09</div>
+<div class="pageno" id="pageno">01 / 07</div>
 
 <main id="top">
 
@@ -793,23 +730,13 @@ body.nav-open .navoverlay{
             <small>Ubicación</small>
             Quinta 262<br>Viña del Mar
           </div>
-
-          <p class="segu__note reveal">
-            Este dossier se enfoca en las Masterclass — la puerta de entrada de las marcas
-            a la experiencia SEGU.
-          </p>
         </div>
 
         <div class="segu__media reveal">
-          <figure class="photo photo--wide" data-caption="El espacio SEGU">
+          <figure class="photo photo--tall" data-caption="El espacio SEGU">
             <img src="assets/images/02-segu-espacio.jpg" alt="Espacio interior de SEGU Fitness Club" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
             <span class="photo__caption">El espacio SEGU</span>
             <span class="photo__file">assets/images/02-segu-espacio.jpg</span>
-          </figure>
-          <figure class="photo photo--tall" data-caption="Comunidad SEGU">
-            <img src="assets/images/02-segu-comunidad.jpg" alt="Comunidad SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
-            <span class="photo__caption">Comunidad SEGU</span>
-            <span class="photo__file">assets/images/02-segu-comunidad.jpg</span>
           </figure>
         </div>
       </div>
@@ -829,19 +756,6 @@ body.nav-open .navoverlay{
             <li>Personal Training</li>
           </ul>
         </div>
-        <div class="segu__list reveal" style="--i:1">
-          <h4>Wellness</h4>
-          <ul>
-            <li>Kinesiología</li>
-            <li>Medicina china</li>
-            <li>Masajes</li>
-            <li>Ventosas</li>
-            <li>Estética</li>
-            <li>Barbería</li>
-            <li>Cafetería</li>
-            <li>Co-Work</li>
-          </ul>
-        </div>
       </div>
     </div>
   </section>
@@ -852,8 +766,6 @@ body.nav-open .navoverlay{
   <section class="section theme-dark" id="s03" data-title="Masterclass">
     <div class="wrap">
       <div class="index-tag"><span class="n">03</span><i></i>Masterclass</div>
-
-      <h2 class="h-title reveal">Entrenamiento + Comunidad + Experiencia</h2>
 
       <div class="mc__formula reveal">
         <span class="word">Entrenamiento</span><span class="plus">+</span>
@@ -884,7 +796,7 @@ body.nav-open .navoverlay{
   </section>
 
   <!-- ============================================================
-       04 — SEPTIEMBRE — SEGU SE CHILENIZA
+       04 — SEPTIEMBRE — SEGU SE CHILENIZA + CALENDARIO
   ============================================================ -->
   <section class="section theme-light" id="s04" data-title="Septiembre">
     <div class="wrap">
@@ -905,7 +817,7 @@ body.nav-open .navoverlay{
 
       <div class="sept__regions reveal-group">
         <div class="region reveal" style="--i:0">
-          <figure class="photo photo--tall" data-caption="Norte">
+          <figure class="photo photo--square" data-caption="Norte">
             <img src="assets/images/04-chile-norte.jpg" alt="Inspiración Norte de Chile — campaña SEGU se Chileniza" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
             <span class="photo__caption">Norte</span>
             <span class="photo__file">assets/images/04-chile-norte.jpg</span>
@@ -914,7 +826,7 @@ body.nav-open .navoverlay{
           <h3>Norte</h3>
         </div>
         <div class="region reveal" style="--i:1">
-          <figure class="photo photo--tall" data-caption="Centro">
+          <figure class="photo photo--square" data-caption="Centro">
             <img src="assets/images/04-chile-centro.jpg" alt="Inspiración Centro de Chile — campaña SEGU se Chileniza" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
             <span class="photo__caption">Centro</span>
             <span class="photo__file">assets/images/04-chile-centro.jpg</span>
@@ -923,7 +835,7 @@ body.nav-open .navoverlay{
           <h3>Centro</h3>
         </div>
         <div class="region reveal" style="--i:2">
-          <figure class="photo photo--tall" data-caption="Sur">
+          <figure class="photo photo--square" data-caption="Sur">
             <img src="assets/images/04-chile-sur.jpg" alt="Inspiración Sur de Chile — campaña SEGU se Chileniza" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
             <span class="photo__caption">Sur</span>
             <span class="photo__file">assets/images/04-chile-sur.jpg</span>
@@ -933,22 +845,10 @@ body.nav-open .navoverlay{
         </div>
       </div>
 
-      <div class="sept__palette reveal">
-        <div class="swatches"><i style="background:#0b0b0a"></i><i style="background:#f7f6f2"></i><i style="background:#b7b3aa"></i><i style="background:#e59407"></i></div>
-        Negro · Blanco · Gris + acentos SEGU
+      <div class="cal__intro reveal">
+        <h2 class="h-title">Masterclass Septiembre</h2>
+        <p class="lede cal__sub">Tres fechas. Tres experiencias.</p>
       </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       05 — CALENDARIO
-  ============================================================ -->
-  <section class="section theme-light" id="s05" data-title="Calendario">
-    <div class="wrap">
-      <div class="index-tag"><span class="n">05</span><i></i>Calendario</div>
-
-      <h2 class="h-title reveal">Masterclass Septiembre</h2>
-      <p class="lede cal__sub reveal">Tres fechas. Tres experiencias.</p>
 
       <div class="cal__list">
 
@@ -967,9 +867,9 @@ body.nav-open .navoverlay{
           </div>
           <div class="datecard__media">
             <figure class="photo photo--tall" data-caption="Lunes 7 — Spinning + Sculptor">
-              <img src="assets/images/05-lunes-spinning-sculptor.jpg" alt="Masterclass Lunes 7 — Spinning y Sculptor en SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+              <img src="assets/images/04-lunes-spinning-sculptor.jpg" alt="Masterclass Lunes 7 — Spinning y Sculptor en SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
               <span class="photo__caption">Lunes 7 — Spinning + Sculptor</span>
-              <span class="photo__file">assets/images/05-lunes-spinning-sculptor.jpg</span>
+              <span class="photo__file">assets/images/04-lunes-spinning-sculptor.jpg</span>
             </figure>
           </div>
         </article>
@@ -989,9 +889,9 @@ body.nav-open .navoverlay{
           </div>
           <div class="datecard__media">
             <figure class="photo photo--tall" data-caption="Jueves 10 — Pilates + Core + GAP">
-              <img src="assets/images/05-jueves-pilates-core-gap.jpg" alt="Masterclass Jueves 10 — Pilates, Core y GAP en SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+              <img src="assets/images/04-jueves-pilates-core-gap.jpg" alt="Masterclass Jueves 10 — Pilates, Core y GAP en SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
               <span class="photo__caption">Jueves 10 — Pilates + Core + GAP</span>
-              <span class="photo__file">assets/images/05-jueves-pilates-core-gap.jpg</span>
+              <span class="photo__file">assets/images/04-jueves-pilates-core-gap.jpg</span>
             </figure>
           </div>
         </article>
@@ -1011,9 +911,9 @@ body.nav-open .navoverlay{
           </div>
           <div class="datecard__media">
             <figure class="photo photo--tall" data-caption="Sábado 13 — HIIT + Masterclass">
-              <img src="assets/images/05-sabado-hiit-masterclass.jpg" alt="Masterclass Sábado 13 — HIIT y evento principal en SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+              <img src="assets/images/04-sabado-hiit-masterclass.jpg" alt="Masterclass Sábado 13 — HIIT y evento principal en SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
               <span class="photo__caption">Sábado 13 — HIIT + Masterclass</span>
-              <span class="photo__file">assets/images/05-sabado-hiit-masterclass.jpg</span>
+              <span class="photo__file">assets/images/04-sabado-hiit-masterclass.jpg</span>
             </figure>
           </div>
         </article>
@@ -1023,11 +923,11 @@ body.nav-open .navoverlay{
   </section>
 
   <!-- ============================================================
-       06 — EVENTO PRINCIPAL
+       05 — EVENTO PRINCIPAL
   ============================================================ -->
-  <section class="section theme-dark" id="s06" data-title="Evento principal">
+  <section class="section theme-dark" id="s05" data-title="Evento principal">
     <div class="wrap">
-      <div class="index-tag"><span class="n">06</span><i></i>Evento principal</div>
+      <div class="index-tag"><span class="n">05</span><i></i>Evento principal</div>
 
       <div class="evento__top reveal">
         <p class="kicker">Sábado 13 · 10:30 HRS</p>
@@ -1053,20 +953,20 @@ body.nav-open .navoverlay{
 
       <div class="evento__media reveal">
         <figure class="photo photo--panorama" data-caption="El evento principal — Sábado 13">
-          <img src="assets/images/06-evento-principal-01.jpg" alt="Evento principal SEGU, sábado 13" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+          <img src="assets/images/05-evento-principal-01.jpg" alt="Evento principal SEGU, sábado 13" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
           <span class="photo__caption">El evento principal — Sábado 13</span>
-          <span class="photo__file">assets/images/06-evento-principal-01.jpg</span>
+          <span class="photo__file">assets/images/05-evento-principal-01.jpg</span>
         </figure>
         <div class="duo">
           <figure class="photo photo--square" data-caption="Parrillada">
-            <img src="assets/images/06-evento-principal-02.jpg" alt="Parrillada en el evento principal SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+            <img src="assets/images/05-evento-principal-02.jpg" alt="Parrillada en el evento principal SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
             <span class="photo__caption">Parrillada</span>
-            <span class="photo__file">assets/images/06-evento-principal-02.jpg</span>
+            <span class="photo__file">assets/images/05-evento-principal-02.jpg</span>
           </figure>
           <figure class="photo photo--square" data-caption="Activaciones">
-            <img src="assets/images/06-evento-principal-03.jpg" alt="Activaciones en el evento principal SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+            <img src="assets/images/05-evento-principal-03.jpg" alt="Activaciones en el evento principal SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
             <span class="photo__caption">Activaciones</span>
-            <span class="photo__file">assets/images/06-evento-principal-03.jpg</span>
+            <span class="photo__file">assets/images/05-evento-principal-03.jpg</span>
           </figure>
         </div>
       </div>
@@ -1074,11 +974,11 @@ body.nav-open .navoverlay{
   </section>
 
   <!-- ============================================================
-       07 — OPORTUNIDADES PARA MARCAS
+       06 — OPORTUNIDADES PARA MARCAS
   ============================================================ -->
-  <section class="section theme-light" id="s07" data-title="Oportunidades">
+  <section class="section theme-light" id="s06" data-title="Oportunidades">
     <div class="wrap">
-      <div class="index-tag"><span class="n">07</span><i></i>Oportunidades</div>
+      <div class="index-tag"><span class="n">06</span><i></i>Oportunidades</div>
 
       <h2 class="h-title reveal">¿Cómo puede participar tu marca?</h2>
 
@@ -1112,87 +1012,11 @@ body.nav-open .navoverlay{
   </section>
 
   <!-- ============================================================
-       08 — EJEMPLO — GRD × SEGU
+       07 — CIERRE
   ============================================================ -->
-  <section class="section theme-light" id="s08" data-title="Ejemplo">
+  <section class="section theme-dark" id="s07" data-title="Cierre">
     <div class="wrap">
-      <div class="index-tag"><span class="n">08</span><i></i>Ejemplo</div>
-
-      <div class="ejemplo__head reveal">
-        <p class="kicker">Caso de referencia</p>
-        <h2 class="h-title ejemplo__title">GRD<span class="x">×</span>SEGU</h2>
-        <p class="ejemplo__flag">Ejemplo de integración de una marca a la experiencia SEGU.</p>
-      </div>
-
-      <div class="ejemplo__body reveal">
-        <div class="ejemplo__media">
-          <figure class="photo photo--tall" data-caption="Parrillada — GRD × SEGU">
-            <img src="assets/images/08-grd-parrillada.jpg" alt="Parrillada, ejemplo de colaboración GRD y SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
-            <span class="photo__caption">Parrillada</span>
-            <span class="photo__file">assets/images/08-grd-parrillada.jpg</span>
-          </figure>
-          <figure class="photo photo--tall" data-caption="Degustación — GRD × SEGU">
-            <img src="assets/images/08-grd-degustacion.jpg" alt="Degustación, ejemplo de colaboración GRD y SEGU" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
-            <span class="photo__caption">Degustación</span>
-            <span class="photo__file">assets/images/08-grd-degustacion.jpg</span>
-          </figure>
-        </div>
-
-        <div class="ejemplo__list">
-          <h4>La colaboración contempló</h4>
-          <ul>
-            <li>Parrillada</li>
-            <li>Degustación</li>
-            <li>Activaciones</li>
-            <li>Dinámicas</li>
-            <li>Premios</li>
-            <li>Contenido</li>
-            <li>Lanzamiento de producto</li>
-            <li>Beneficio exclusivo para asistentes</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="gana reveal">
-        <h2 class="h-title gana__title">Tu marca gana presencia. La comunidad gana una experiencia.</h2>
-
-        <div class="gana__row reveal-group">
-          <div class="gana__item reveal" style="--i:0">
-            <span class="letter">01</span>
-            <h5>Visibilidad</h5>
-            <p>Presencia física durante la actividad.</p>
-          </div>
-          <div class="gana__item reveal" style="--i:1">
-            <span class="letter">02</span>
-            <h5>Experiencia</h5>
-            <p>Contacto directo con consumidores.</p>
-          </div>
-          <div class="gana__item reveal" style="--i:2">
-            <span class="letter">03</span>
-            <h5>Contenido</h5>
-            <p>Material audiovisual generado alrededor de la activación.</p>
-          </div>
-          <div class="gana__item reveal" style="--i:3">
-            <span class="letter">04</span>
-            <h5>Comunidad</h5>
-            <p>Interacción con personas que ya tienen interés en fitness y bienestar.</p>
-          </div>
-          <div class="gana__item reveal" style="--i:4">
-            <span class="letter">05</span>
-            <h5>Recordación</h5>
-            <p>La marca se integra a una experiencia, no solamente a una pieza gráfica.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       09 — CIERRE
-  ============================================================ -->
-  <section class="section theme-dark" id="s09" data-title="Cierre">
-    <div class="wrap">
-      <div class="index-tag"><span class="n">09</span><i></i>Cierre</div>
+      <div class="index-tag"><span class="n">07</span><i></i>Cierre</div>
 
       <p class="kicker reveal">Hablemos</p>
       <h2 class="h-title cierre__title reveal">¿Hacemos algo juntos?</h2>
@@ -1203,9 +1027,9 @@ body.nav-open .navoverlay{
       </div>
 
       <figure class="photo photo--panorama cierre__media reveal" data-caption="Comunidad SEGU">
-        <img src="assets/images/09-cierre-comunidad.jpg" alt="Comunidad SEGU Fitness Club" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
+        <img src="assets/images/07-cierre-comunidad.jpg" alt="Comunidad SEGU Fitness Club" loading="lazy" onerror="this.closest('.photo').classList.add('is-empty')">
         <span class="photo__caption">Comunidad SEGU</span>
-        <span class="photo__file">assets/images/09-cierre-comunidad.jpg</span>
+        <span class="photo__file">assets/images/07-cierre-comunidad.jpg</span>
       </figure>
 
       <div class="contact reveal">
@@ -1216,9 +1040,9 @@ body.nav-open .navoverlay{
         </div>
 
         <dl class="contact__list">
-          <div><dt>WhatsApp</dt><dd class="tbd">[POR CONFIRMAR]</dd></div>
-          <div><dt>Email</dt><dd class="tbd">[POR CONFIRMAR]</dd></div>
-          <div><dt>Sitio web</dt><dd class="tbd">[POR CONFIRMAR]</dd></div>
+          <div><dt>WhatsApp</dt><dd><a href="https://wa.me/56971850665" target="_blank" rel="noopener">+56 9 7185 0665</a></dd></div>
+          <div><dt>Email</dt><dd><a href="mailto:8segufitness@gmail.com">8segufitness@gmail.com</a></dd></div>
+          <div><dt>Sitio web</dt><dd>segufitnesscl</dd></div>
         </dl>
       </div>
 
@@ -1296,7 +1120,7 @@ body.nav-open .navoverlay{
       entries.forEach(function(entry){
         if(entry.isIntersecting){
           var idx = sections.indexOf(entry.target) + 1;
-          if(idx > 0){ pageno.textContent = String(idx).padStart(2,'0') + ' / 09'; }
+          if(idx > 0){ pageno.textContent = String(idx).padStart(2,'0') + ' / 07'; }
         }
       });
     }, { threshold:0.5 });
