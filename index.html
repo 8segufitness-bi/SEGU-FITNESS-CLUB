@@ -361,6 +361,16 @@ body.nav-open .navoverlay{
 .hero__scrim{ position:absolute; inset:0; background:rgba(8,8,7,.5); z-index:1; }
 .hero__content{ position:relative; z-index:2; }
 
+/* Large brand watermark — the isotype as a quiet signature behind the headline,
+   the first high-impact placement of the SEGU mark a visiting brand sees. */
+.hero__mark{
+  position:absolute; z-index:1; pointer-events:none;
+  right:clamp(24px,5vw,80px); top:clamp(96px,16vh,190px);
+  width:clamp(140px,16vw,260px); height:auto;
+  opacity:.55; filter:brightness(0) invert(1);
+  mix-blend-mode:soft-light;
+}
+
 .hero__kicker{ margin-bottom:clamp(24px,5vw,44px); color:rgba(247,246,242,.85); }
 .hero__kicker .eyebrow::before{ background:var(--c-orange); }
 
@@ -597,6 +607,7 @@ body.nav-open .navoverlay{
   border-top:1px solid var(--line); padding-top:clamp(40px,6vw,64px);
   display:grid; grid-template-columns:1fr 1fr; gap:clamp(32px,6vw,64px);
 }
+.contact__mark{ width:clamp(30px,3.4vw,40px); height:auto; margin-bottom:16px; }
 .contact__brand{
   font-family:var(--ff-display); text-transform:uppercase; line-height:1;
   font-size:clamp(1.8rem,3.6vw,3rem);
@@ -690,6 +701,7 @@ body.nav-open .navoverlay{
       <span class="photo__file">assets/images/01-portada-hero.jpg</span>
     </figure>
     <div class="hero__scrim" aria-hidden="true"></div>
+    <img class="hero__mark" src="assets/brand/segu-logo.png" alt="" aria-hidden="true" onerror="this.remove()">
 
     <div class="wrap hero__content">
       <div class="hero__kicker reveal">
@@ -1034,6 +1046,7 @@ body.nav-open .navoverlay{
 
       <div class="contact reveal">
         <div>
+          <img class="contact__mark" src="assets/brand/segu-logo.png" alt="" aria-hidden="true" onerror="this.remove()">
           <p class="contact__brand">SEGU<br>Fitness Club</p>
           <p class="contact__addr">Quinta 262<br>Viña del Mar, Chile</p>
           <a class="contact__ig" href="https://instagram.com/segufitnesscl" target="_blank" rel="noopener">@segufitnesscl</a>
