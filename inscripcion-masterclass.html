@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<!--
+  SEGU × MASTERCLASS — Formulario público de inscripción
+  ---------------------------------------------------------------
+  QUÉ ES ESTE ARCHIVO
+  Página independiente del dossier (index.html). Los socios la abren desde
+  un link (WhatsApp, Instagram, etc.), completan Nombre + RUT + Correo,
+  eligen la fecha, y al enviar quedan redirigidos al formulario real de
+  Airtable (ya con sus datos precargados) para confirmar el envío. Los
+  datos quedan en la misma base que usa recepción para el listado y las
+  estadísticas — no hay servidor propio ni base de datos en este archivo.
+
+  CÓMO EDITAR CADA MES — todo lo que cambia mes a mes vive en el bloque
+  "CONFIG" dentro de <script>, marcado más abajo. No hace falta tocar el
+  resto del HTML/CSS para lanzar la campaña del próximo mes: solo cambiar
+  el título, la bajada y el arreglo de fechas de CONFIG.
+
+  CONEXIÓN CON AIRTABLE — CONFIG.airtable.formUrl debe apuntar al link
+  público del formulario de la tabla "Inscripciones" (base SEGU FITNESS —
+  Masterclass). Para generarlo: abrir la tabla en Airtable → "+" junto a
+  las vistas → Form → marcar Nombre/RUT/Correo como "Required" → Share
+  form → copiar el link y pegarlo abajo en CONFIG.airtable.formUrl.
+  Mientras ese link no esté pegado, esta página avisa en vez de romperse.
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inscripción Masterclass</title>
+<meta name="description" content="Inscribite a la Masterclass del mes en SEGU Fitness Club — Quinta 262, Viña del Mar.">
+<link rel="icon" href="assets/brand/segu-logo.png" type="image/png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   0. RESET + BASE — esta es la "BASE" de diseño: no se toca mes a mes.
+   Reutiliza exactamente los tokens de color/tipografía del dossier
+   (index.html) para que este formulario se sienta parte del mismo
+   sistema, no una pieza aparte.
+   ============================================================ */
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; }
+body,h1,h2,h3,p,dl,dd,dt,fieldset,legend{ margin:0; }
+ul{ list-style:none; margin:0; padding:0; }
+img{ max-width:100%; display:block; }
+button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
+input,select{ font:inherit; color:inherit; }
+[hidden]{ display:none !important; }
+
+:root{
+  --c-black:#0b0b0a;
+  --c-white:#f7f6f2;
+  --c-orange:#e59407;
+  --c-orange-dim:#c07f0a;
+  --c-gray-700:#3a3937;
+  --c-gray-500:#726f68;
+  --c-gray-300:#b7b3aa;
+  --c-error:#e5573f;
+  --c-error-soft:rgba(229,87,63,.12);
+
+  --ff-display:'Anton', 'Arial Narrow', Impact, sans-serif;
+  --ff-serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --ff-body:'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+
+  --edge: clamp(20px, 6vw, 48px);
+  --maxw: 620px;
+  --line: rgba(247,246,242,.18);
+}
+
+body{
+  font-family:var(--ff-body);
+  background:var(--c-black);
+  color:var(--c-white);
+  font-size:16px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  min-height:100svh;
+}
+
+.wrap{ max-width:var(--maxw); margin:0 auto; padding:0 var(--edge); }
+
+.eyebrow{
+  font-family:var(--ff-body); font-weight:600; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--c-gray-300);
+  display:flex; align-items:center; gap:10px;
+}
+.eyebrow::before{ content:''; width:7px; height:7px; border-radius:50%; background:var(--c-orange); flex:none; }
+
+.divider{ height:1px; background:var(--line); border:0; width:100%; }
+
+/* ============================================================
+   1. HEADER
+   ============================================================ */
+.siteheader{
+  display:flex; align-items:center; gap:10px;
+  padding:22px var(--edge);
+  font-family:var(--ff-body); font-weight:700; font-size:12px;
+  letter-spacing:.22em; text-transform:uppercase;
+}
+.siteheader img{ width:20px; height:20px; }
+
+/* ============================================================
+   2. HERO — título y bajada de la campaña (editable en CONFIG)
+   ============================================================ */
+.hero{ padding:clamp(24px,6vw,48px) 0 clamp(32px,7vw,56px); }
+.hero h1{
+  font-family:var(--ff-display); text-transform:uppercase; color:var(--c-white);
+  line-height:.92; letter-spacing:.005em; margin-top:18px;
+  font-size:clamp(2.1rem, 8vw, 3.4rem);
+  text-wrap:balance;
+}
+.hero .bajada{
+  font-family:var(--ff-serif); font-style:italic; font-weight:400;
+  color:var(--c-gray-300); line-height:1.35;
+  font-size:clamp(1.05rem, 3vw, 1.35rem);
+  margin-top:16px; max-width:42ch;
+}
+.hero .lugar{
+  margin-top:22px; font-size:13px; letter-spacing:.06em; color:var(--c-gray-300);
+}
+.hero .lugar strong{ color:var(--c-white); font-weight:600; }
+
+/* ============================================================
+   3. FORM
+   ============================================================ */
+form{ padding:clamp(28px,6vw,44px) 0 clamp(48px,9vw,80px); }
+
+.field-label{
+  display:block; font-family:var(--ff-body); font-weight:600; font-size:11px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--c-gray-300);
+  margin-bottom:10px;
+}
+.field{ margin-bottom:26px; }
+.field input{
+  width:100%; background:transparent; border:0; border-bottom:1px solid var(--line);
+  color:var(--c-white); font-size:17px; padding:10px 2px 12px;
+  transition:border-color .2s ease;
+}
+.field input::placeholder{ color:var(--c-gray-500); }
+.field input:focus{ outline:0; border-bottom-color:var(--c-orange); }
+.field.has-error input{ border-bottom-color:var(--c-error); }
+.field .err{
+  display:none; margin-top:8px; font-size:12.5px; color:var(--c-error);
+}
+.field.has-error .err{ display:block; }
+.field .hint{ margin-top:8px; font-size:12.5px; color:var(--c-gray-500); }
+
+/* fechas — tarjetas seleccionables tipo "datecard" del dossier */
+.fechas-label{
+  font-family:var(--ff-body); font-weight:600; font-size:11px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--c-gray-300);
+  margin-bottom:14px; display:block;
+}
+.fechas{ display:flex; flex-direction:column; gap:12px; margin-bottom:8px; }
+.fecha-opt{
+  position:relative; display:block; cursor:pointer;
+  border:1px solid var(--line); border-radius:2px;
+  padding:16px 18px; transition:border-color .2s ease, background .2s ease;
+}
+.fecha-opt input{ position:absolute; opacity:0; width:1px; height:1px; }
+.fecha-opt .row{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+.fecha-opt .dia{
+  font-family:var(--ff-display); text-transform:uppercase; letter-spacing:.01em;
+  font-size:clamp(1.15rem,3.4vw,1.4rem); line-height:1;
+}
+.fecha-opt .hora{ font-size:12px; letter-spacing:.08em; color:var(--c-gray-300); }
+.fecha-opt .clase{ margin-top:6px; font-size:14px; color:var(--c-gray-300); }
+.fecha-opt .pill{
+  display:inline-flex; align-items:center; gap:6px; margin-top:10px;
+  font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--c-orange); border:1px solid var(--c-orange); border-radius:999px; padding:4px 10px;
+}
+.fecha-opt .pill::before{ content:''; width:5px; height:5px; border-radius:50%; background:var(--c-orange); }
+.fecha-opt:hover{ border-color:rgba(247,246,242,.4); }
+.fecha-opt.is-checked{ border-color:var(--c-orange); background:rgba(229,148,7,.08); }
+.fecha-opt .check{
+  position:absolute; top:16px; right:16px; width:18px; height:18px;
+  border:1px solid var(--c-gray-500); border-radius:50%; flex:none;
+}
+.fecha-opt.is-checked .check{ border-color:var(--c-orange); background:var(--c-orange); }
+.fecha-opt.is-checked .check::after{
+  content:''; position:absolute; inset:5px; border-radius:50%; background:var(--c-black);
+}
+
+.submit-btn{
+  width:100%; margin-top:8px;
+  background:var(--c-orange); color:var(--c-black);
+  font-family:var(--ff-body); font-weight:700; font-size:13px;
+  letter-spacing:.14em; text-transform:uppercase;
+  padding:18px 24px; border-radius:2px;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  transition:background .2s ease, transform .1s ease;
+}
+.submit-btn:hover{ background:var(--c-white); }
+.submit-btn:active{ transform:scale(.99); }
+.submit-btn .arrow{ transition:transform .2s ease; }
+.submit-btn:hover .arrow{ transform:translateX(4px); }
+
+.form-note{
+  margin-top:16px; font-size:12px; color:var(--c-gray-500); line-height:1.6;
+}
+
+.setup-warning{
+  margin-top:24px; padding:16px 18px; border:1px dashed var(--c-error);
+  background:var(--c-error-soft); color:var(--c-white); font-size:13px; line-height:1.6;
+  border-radius:2px;
+}
+.setup-warning strong{ color:var(--c-error); }
+
+/* ============================================================
+   4. FOOTER
+   ============================================================ */
+.sitefooter{
+  border-top:1px solid var(--line); padding:24px var(--edge) 40px;
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  font-size:11px; letter-spacing:.06em; color:var(--c-gray-500);
+}
+
+@media (min-width:640px){
+  body{ display:flex; flex-direction:column; }
+  .hero .bajada{ max-width:46ch; }
+}
+</style>
+</head>
+<body>
+
+<header class="siteheader">
+  <img src="assets/brand/segu-logo.png" alt="SEGU" onerror="this.style.display='none'">
+  SEGU × Masterclass
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <p class="eyebrow" id="hero-eyebrow"></p>
+    <h1 id="hero-titulo"></h1>
+    <p class="bajada" id="hero-bajada"></p>
+    <p class="lugar"><strong>Quinta 262</strong> — Viña del Mar, Chile</p>
+  </section>
+
+  <hr class="divider">
+
+  <form id="inscripcion-form" novalidate>
+    <div class="field" id="field-nombre">
+      <label class="field-label" for="in-nombre">Nombre completo</label>
+      <input id="in-nombre" name="nombre" type="text" autocomplete="name" placeholder="Ej. María Pérez">
+      <p class="err">Ingresá tu nombre completo.</p>
+    </div>
+
+    <div class="field" id="field-rut">
+      <label class="field-label" for="in-rut">RUT</label>
+      <input id="in-rut" name="rut" type="text" inputmode="text" autocomplete="off" placeholder="12.345.678-9">
+      <p class="hint">Con guión y dígito verificador.</p>
+      <p class="err">Ese RUT no es válido — revisalo.</p>
+    </div>
+
+    <div class="field" id="field-correo">
+      <label class="field-label" for="in-correo">Correo</label>
+      <input id="in-correo" name="correo" type="email" autocomplete="email" placeholder="tucorreo@mail.com">
+      <p class="err">Ingresá un correo válido.</p>
+    </div>
+
+    <fieldset class="field" id="field-fecha" style="border:0; padding:0;">
+      <legend class="fechas-label">Elegí tu fecha</legend>
+      <div class="fechas" id="fechas-list"></div>
+      <p class="err">Elegí una fecha para continuar.</p>
+    </fieldset>
+
+    <button type="submit" class="submit-btn">
+      <span>Reservar mi cupo</span><span class="arrow">→</span>
+    </button>
+    <p class="form-note">Al enviar te llevamos a la página de confirmación para completar tu reserva.</p>
+
+    <div class="setup-warning" id="setup-warning" hidden>
+      <strong>Formulario aún no conectado.</strong> Avisale al equipo de SEGU — falta pegar el link de Airtable en <code>CONFIG.airtable.formUrl</code> dentro de este archivo.
+    </div>
+  </form>
+</main>
+
+<footer class="sitefooter">
+  <span>SEGU Fitness Club — Quinta 262, Viña del Mar</span>
+  <span>@segufitnesscl</span>
+</footer>
+
+<script>
+"use strict";
+
+/* ============================================================
+   ✏️  CONFIG — EDITAR ACÁ CADA MES  ✏️
+   Es lo único que hay que tocar para lanzar la campaña del próximo mes.
+   No hace falta tocar CSS, HTML ni el resto del script.
+   ============================================================ */
+const CONFIG = {
+
+  // Título grande (Anton, mayúsculas automáticas) y bajada (Fraunces
+  // itálica) — el "tema" del mes, igual que la sección "Septiembre" del
+  // dossier (ej. "SEGU se Chileniza").
+  eyebrow: "Inscripción · Masterclass Septiembre",
+  titulo: "SEGU se Chileniza",
+  bajada: "Elegí tu fecha de Masterclass y dejanos tus datos — te esperamos en Quinta 262.",
+
+  // Una entrada por fecha disponible este mes. "opcionAirtable" tiene que
+  // ser EXACTAMENTE igual a la opción del campo "Fecha Masterclass" en la
+  // tabla Inscripciones de Airtable (mismo texto, ni una tilde de más),
+  // para que el formulario de Airtable la seleccione sola al abrir.
+  fechas: [
+    {
+      dia: "Lunes 7",
+      hora: "19:00 HRS",
+      clase: "Spinning + Sculptor",
+      principal: false,
+      opcionAirtable: "Lunes 7 Sep · Spinning + Sculptor"
+    },
+    {
+      dia: "Jueves 10",
+      hora: "19:00 HRS",
+      clase: "Pilates + Core + GAP",
+      principal: false,
+      opcionAirtable: "Jueves 10 Sep · Pilates + Core + GAP"
+    },
+    {
+      dia: "Sábado 12",
+      hora: "10:30 HRS",
+      clase: "HIIT + Masterclass",
+      principal: true,
+      opcionAirtable: "Sábado 12 Sep · HIIT + Masterclass (evento principal)"
+    }
+  ],
+
+  // Conexión con Airtable — ver instrucciones al comienzo de este archivo.
+  airtable: {
+    // Pegar acá el link del formulario público (Share form → Copy link).
+    formUrl: "PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_AIRTABLE",
+    // Nombres EXACTOS de los campos en la tabla Inscripciones — no tocar
+    // salvo que también se rename el campo en Airtable.
+    campos: { nombre: "Nombre", rut: "RUT", correo: "Correo", fecha: "Fecha Masterclass" }
+  }
+};
+/* ============================================================
+   fin de CONFIG — de acá para abajo es la lógica de la página (BASE),
+   no hace falta editarla mes a mes.
+   ============================================================ */
+
+document.getElementById("hero-eyebrow").textContent = CONFIG.eyebrow;
+document.getElementById("hero-titulo").textContent = CONFIG.titulo;
+document.getElementById("hero-bajada").textContent = CONFIG.bajada;
+document.title = CONFIG.titulo + " — Inscripción Masterclass SEGU";
+
+const fechasList = document.getElementById("fechas-list");
+CONFIG.fechas.forEach((f, i) => {
+  const id = "fecha-" + i;
+  const label = document.createElement("label");
+  label.className = "fecha-opt";
+  label.setAttribute("for", id);
+  label.innerHTML = `
+    <input type="radio" name="fecha" id="${id}" value="${i}">
+    <span class="check" aria-hidden="true"></span>
+    <span class="row">
+      <span class="dia">${f.dia}</span>
+      <span class="hora">${f.hora}</span>
+    </span>
+    <span class="clase">${f.clase}</span>
+    ${f.principal ? '<span class="pill">Evento principal</span>' : ''}
+  `;
+  fechasList.appendChild(label);
+  label.querySelector("input").addEventListener("change", () => {
+    document.querySelectorAll(".fecha-opt").forEach(el => el.classList.remove("is-checked"));
+    label.classList.add("is-checked");
+    document.getElementById("field-fecha").classList.remove("has-error");
+  });
+});
+
+const AIRTABLE_READY = CONFIG.airtable.formUrl && CONFIG.airtable.formUrl.indexOf("http") === 0;
+if (!AIRTABLE_READY) document.getElementById("setup-warning").hidden = false;
+
+/* ---- validación RUT chileno (módulo 11) ---- */
+function limpiarRut(v) {
+  return (v || "").replace(/\./g, "").replace(/\s/g, "").replace("-", "").toUpperCase();
+}
+function formatearRut(v) {
+  const limpio = limpiarRut(v);
+  if (limpio.length < 2) return limpio;
+  const cuerpo = limpio.slice(0, -1);
+  const dv = limpio.slice(-1);
+  const cuerpoFmt = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return cuerpoFmt + "-" + dv;
+}
+function validarRut(v) {
+  const limpio = limpiarRut(v);
+  if (!/^[0-9]{7,8}[0-9K]$/.test(limpio)) return false;
+  const cuerpo = limpio.slice(0, -1);
+  const dvIngresado = limpio.slice(-1);
+  let suma = 0, multiplo = 2;
+  for (let i = cuerpo.length - 1; i >= 0; i--) {
+    suma += multiplo * parseInt(cuerpo[i], 10);
+    multiplo = multiplo < 7 ? multiplo + 1 : 2;
+  }
+  const resto = 11 - (suma % 11);
+  const dvEsperado = resto === 11 ? "0" : resto === 10 ? "K" : String(resto);
+  return dvIngresado === dvEsperado;
+}
+
+const rutInput = document.getElementById("in-rut");
+rutInput.addEventListener("blur", () => {
+  if (rutInput.value.trim()) rutInput.value = formatearRut(rutInput.value);
+});
+
+/* ---- envío ---- */
+document.getElementById("inscripcion-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const nombre = document.getElementById("in-nombre").value.trim();
+  const rut = document.getElementById("in-rut").value.trim();
+  const correo = document.getElementById("in-correo").value.trim();
+  const fechaChecked = document.querySelector('input[name="fecha"]:checked');
+
+  let valid = true;
+  const setError = (fieldId, hasError) => {
+    document.getElementById(fieldId).classList.toggle("has-error", hasError);
+    if (hasError) valid = false;
+  };
+
+  setError("field-nombre", nombre.length < 3);
+  setError("field-rut", !validarRut(rut));
+  setError("field-correo", !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo));
+  setError("field-fecha", !fechaChecked);
+
+  if (!valid) {
+    document.querySelector(".field.has-error, fieldset.has-error")
+      ?.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+
+  if (!AIRTABLE_READY) {
+    document.getElementById("setup-warning").hidden = false;
+    document.getElementById("setup-warning").scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+
+  const fecha = CONFIG.fechas[Number(fechaChecked.value)];
+  const c = CONFIG.airtable.campos;
+  const params = new URLSearchParams();
+  params.set("prefill_" + c.nombre, nombre);
+  params.set("prefill_" + c.rut, formatearRut(rut));
+  params.set("prefill_" + c.correo, correo);
+  params.set("prefill_" + c.fecha, fecha.opcionAirtable);
+  params.set("hide_" + c.nombre, "false");
+
+  const sep = CONFIG.airtable.formUrl.indexOf("?") === -1 ? "?" : "&";
+  window.location.href = CONFIG.airtable.formUrl + sep + params.toString();
+});
+</script>
+</body>
+</html>
