@@ -21,7 +21,7 @@ Mientras un archivo no exista, esa zona del dossier muestra un placeholder edito
 | `04-chile-sur.jpg` | 04 · Septiembre | Cuadrada 1:1 | Inspiración Sur de Chile. |
 | `04-lunes-spinning-sculptor.jpg` | 04 · Calendario (fusionada con Septiembre) | Vertical 3:4 | Lunes 7 — Spinning + Sculptor. |
 | `04-jueves-pilates-core-gap.jpg` | 04 · Calendario (fusionada con Septiembre) | Vertical 3:4 | Jueves 10 — Pilates + Core + GAP. |
-| `04-sabado-hiit-masterclass.jpg` | 04 · Calendario (fusionada con Septiembre) | Vertical 3:4 | Sábado 13 — HIIT + Masterclass (evento principal). |
+| `04-sabado-hiit-masterclass.jpg` | 04 · Calendario (fusionada con Septiembre) | Vertical 3:4 | Sábado 12 — HIIT + Masterclass (evento principal). |
 | `05-evento-principal-01.jpg` | 05 · Evento Principal | Horizontal, ancha (3:2 o más) | Imagen hero del evento del sábado. |
 | `05-evento-principal-02.jpg` | 05 · Evento Principal | Vertical o cuadrada | Parrillada / degustación. |
 | `05-evento-principal-03.jpg` | 05 · Evento Principal | Vertical o cuadrada | Activaciones / dinámicas. |
