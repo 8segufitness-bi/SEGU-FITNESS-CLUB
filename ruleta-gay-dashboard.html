@@ -25,10 +25,6 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="assets/brand/segu-logo.png" type="image/png">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
 <style>
 *,*::before,*::after{ box-sizing:border-box; }
 html{ -webkit-text-size-adjust:100%; }
@@ -304,7 +300,7 @@ main{ padding-bottom:80px; }
   <span>@segufitnesscl</span>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="assets/js/qrcode.js"></script>
 <script src="assets/js/ruleta-gay.js"></script>
 <script>
 "use strict";
@@ -327,7 +323,13 @@ function mostrarQr(roomId) {
   const url = window.location.href.replace(/ruleta-gay-dashboard\.html.*$/, "ruleta-gay-inscripcion.html") + "?r=" + roomId;
   $("qr-link").value = url;
   $("qr-box").innerHTML = "";
-  if (window.QRCode) new QRCode($("qr-box"), { text: url, width: 176, height: 176, colorDark: "#08070c", colorLight: "#ffffff" });
+  if (window.qrcode) {
+    const qr = qrcode(0, "M");
+    qr.addData(url);
+    qr.make();
+    $("qr-box").innerHTML = qr.createSvgTag({ scalable: true });
+    $("qr-box").querySelector("svg").style.cssText = "width:176px;height:176px;display:block;";
+  }
 }
 $("copiar-link").addEventListener("click", () => {
   navigator.clipboard.writeText($("qr-link").value).then(() => {
