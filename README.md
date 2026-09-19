@@ -15,7 +15,7 @@ index.html                    → el dossier completo (una sola página, 9 secci
 inscripcion-masterclass.html  → formulario público de inscripción a la Masterclass
 ruleta-gay-inscripcion.html   → juego de fiesta: página del QR (registro + votación)
 ruleta-gay-dashboard.html     → juego de fiesta: panel privado del anfitrión/moderador
-assets/js/ruleta-gay.js       → datos compartidos (Firebase) de la Ruleta Gay Amigxs
+assets/js/ruleta-gay.js       → datos compartidos de la Ruleta Gay Amigxs (sin cuentas)
 assets/images/                → fotografías reales (ver README.md dentro de la carpeta)
 assets/brand/segu-logo.png    → isotipo SEGU usado en el header y como favicon
 ```
@@ -37,8 +37,11 @@ Une participante puede marcarse como VIP y su voto vale x3. El anfitrión activa
 la ruleta desde `ruleta-gay-dashboard.html` para revelar a la ganadora de cada
 categoría.
 
-Como necesita sincronizar en vivo el celular del anfitrión con el de cada
-invitade, usa Firebase Firestore (gratis) en vez de Airtable. **Antes de usarla
-en una fiesta real hay que conectar un proyecto propio** — instrucciones paso a
-paso al inicio de `assets/js/ruleta-gay.js`. Mientras ese paso no esté hecho,
-ambas páginas avisan en vez de romperse.
+No hace falta crear ninguna cuenta ni proyecto: abrís `ruleta-gay-dashboard.html`
+y ya funciona. Internamente guarda los datos de la partida en jsonblob.com, un
+servicio público y anónimo (sin login) — cada participante tiene su propio
+"papelito" de votos, así que nadie le pisa el voto a nadie aunque voten varias
+personas a la vez. El detalle está comentado al inicio de
+`assets/js/ruleta-gay.js`. Como es un servicio gratuito de terceros pensado para
+prototipos, conviene hacer una prueba rápida (anotar 1 persona, votar, activar
+la ruleta) antes del evento.

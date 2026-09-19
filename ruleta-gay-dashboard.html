@@ -212,11 +212,11 @@ main{ padding-bottom:80px; }
 }
 .cat-chip.is-revelada{ background:var(--rb-gradient); color:var(--c-black); border-color:transparent; font-weight:700; }
 
-.setup-warning{
+.error-banner{
   margin-top:20px; padding:16px 18px; border:1px dashed var(--c-error);
   background:var(--c-error-soft); font-size:13px; line-height:1.6; border-radius:12px;
 }
-.setup-warning strong{ color:var(--c-error); }
+.error-banner strong{ color:var(--c-error); }
 
 .sitefooter{
   border-top:1px solid var(--line); padding:24px var(--edge) 40px;
@@ -238,12 +238,7 @@ main{ padding-bottom:80px; }
     <p>Mostrá el QR para que la gente se sume, cargá los perfiles de Instagram, marcá a la persona VIP (x3) y activá la ruleta cuando estén listos los votos.</p>
   </section>
 
-  <div class="setup-warning" id="setup-warning" hidden>
-    <strong>Ruleta aún no conectada.</strong> Falta configurar Firebase en
-    <code>assets/js/ruleta-gay.js</code> — seguí las instrucciones que están al
-    inicio de ese archivo (crear proyecto gratis, pegar las credenciales). Mientras
-    tanto este panel no puede leer ni guardar datos.
-  </div>
+  <div class="error-banner" id="error-banner" hidden></div>
 
   <div class="grid2" style="margin-top:24px;">
     <section class="card">
@@ -272,7 +267,7 @@ main{ padding-bottom:80px; }
     <div class="stat-row">
       <div class="stat"><b id="stat-participantes">0</b>anotades</div>
       <div class="stat"><b id="stat-perfiles">0</b>perfiles cargados</div>
-      <div class="stat"><b id="stat-votos">0</b>votos emitidos</div>
+      <div class="stat"><b id="stat-votos">0</b>completaron su voto</div>
     </div>
     <p class="sub" style="margin-top:14px;">Tocá 👑 para que una persona vote con peso x3 en todas las categorías (solo puede haber une VIP a la vez).</p>
     <div class="lista" id="participantes-lista" style="margin-top:12px;"></div>
@@ -310,28 +305,32 @@ main{ padding-bottom:80px; }
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
 <script src="assets/js/ruleta-gay.js"></script>
 <script>
 "use strict";
 
-if (!RULETA_READY) document.getElementById("setup-warning").hidden = false;
-
 const $ = (id) => document.getElementById(id);
 const COLORES = ["#ff3355", "#ff9a2e", "#ffe14d", "#3ddc84", "#3ea8ff", "#c26bff"];
 
+function mostrarError(msg) {
+  const banner = $("error-banner");
+  banner.innerHTML = `<strong>Uy, algo falló.</strong> ${msg}`;
+  banner.hidden = false;
+}
+
 let perfiles = [];
 let participantes = [];
-let votos = [];
 let estado = {};
 
-/* ---- QR ---- */
-const qrUrl = window.location.href.replace(/ruleta-gay-dashboard\.html.*$/, "ruleta-gay-inscripcion.html");
-$("qr-link").value = qrUrl;
-if (window.QRCode) new QRCode($("qr-box"), { text: qrUrl, width: 176, height: 176, colorDark: "#08070c", colorLight: "#ffffff" });
+/* ---- QR (depende del id de sala, se arma una vez resuelta) ---- */
+function mostrarQr(roomId) {
+  const url = window.location.href.replace(/ruleta-gay-dashboard\.html.*$/, "ruleta-gay-inscripcion.html") + "?r=" + roomId;
+  $("qr-link").value = url;
+  $("qr-box").innerHTML = "";
+  if (window.QRCode) new QRCode($("qr-box"), { text: url, width: 176, height: 176, colorDark: "#08070c", colorLight: "#ffffff" });
+}
 $("copiar-link").addEventListener("click", () => {
-  navigator.clipboard.writeText(qrUrl).then(() => {
+  navigator.clipboard.writeText($("qr-link").value).then(() => {
     $("copiar-link").textContent = "¡Copiado!";
     setTimeout(() => { $("copiar-link").textContent = "Copiar"; }, 1500);
   });
@@ -340,12 +339,12 @@ $("copiar-link").addEventListener("click", () => {
 /* ---- perfiles ---- */
 $("perfil-form").addEventListener("submit", async (e) => {
   e.preventDefault();
-  if (!RULETA_READY) return;
   const val = $("in-url").value.trim();
   if (!val) return;
   const btn = e.target.querySelector("button");
   btn.disabled = true;
   try { await rgAgregarPerfil(val); $("in-url").value = ""; }
+  catch (err) { mostrarError("No se pudo agregar el perfil — probá de nuevo."); }
   finally { btn.disabled = false; }
 });
 
@@ -364,28 +363,24 @@ function renderPerfiles() {
 }
 
 /* ---- participantes ---- */
-function categoriasCompletas(p) {
-  const votadas = p.categoriasVotadas || {};
-  return RULETA_CONFIG.categorias.filter(c => votadas[c.id]).length;
-}
 function renderParticipantes() {
   $("stat-participantes").textContent = participantes.length;
+  $("stat-votos").textContent = participantes.filter(p => p.completo).length;
   const cont = $("participantes-lista");
   if (participantes.length === 0) { cont.innerHTML = `<p class="lista-vacia">Todavía no se anotó nadie.</p>`; return; }
   cont.innerHTML = "";
   participantes.forEach((p) => {
     const row = document.createElement("div");
     row.className = "participante" + (p.isVip ? " is-vip" : "");
-    const completas = categoriasCompletas(p);
     row.innerHTML = `
       <span>
         <span class="nombre">${p.nombre}</span><br>
-        <span class="votos">${completas}/${RULETA_CONFIG.categorias.length} categorías votadas</span>
+        <span class="votos">${p.completo ? "✅ Completó su voto" : "⏳ Votando…"}</span>
       </span>
       <button type="button" class="vip-btn${p.isVip ? " is-vip" : ""}">${p.isVip ? "👑 VIP ×3 — quitar" : "👑 Hacer VIP"}</button>
     `;
     row.querySelector(".vip-btn").addEventListener("click", () => {
-      p.isVip ? rgQuitarVip(p.id) : rgMarcarVip(p.id);
+      (p.isVip ? rgQuitarVip(p.id) : rgMarcarVip(p.id)).catch(() => mostrarError("No se pudo actualizar — probá de nuevo."));
     });
     cont.appendChild(row);
   });
@@ -393,6 +388,7 @@ function renderParticipantes() {
 
 /* ---- ruleta / activación ---- */
 let girando = false;
+let calculando = false;
 let categoriaActualIdx = 0;
 
 function primeraNoRevelada() {
@@ -456,8 +452,8 @@ function actualizarRuletaCard() {
     return;
   }
   btn.hidden = false;
-  btn.disabled = girando || perfiles.length === 0;
-  btn.textContent = "Girar y revelar — " + RULETA_CONFIG.categorias[categoriaActualIdx].nombre;
+  btn.disabled = girando || calculando || perfiles.length === 0;
+  btn.textContent = calculando ? "Calculando…" : "Girar y revelar — " + RULETA_CONFIG.categorias[categoriaActualIdx].nombre;
 
   if (!girando) {
     dibujarRuleta(canvas, perfiles.map(p => ({ label: p.handle })));
@@ -469,13 +465,28 @@ function actualizarRuletaCard() {
   }
 }
 
-$("btn-girar").addEventListener("click", () => {
-  if (girando || categoriaActualIdx === -1 || perfiles.length === 0) return;
+$("btn-girar").addEventListener("click", async () => {
+  if (girando || calculando || categoriaActualIdx === -1 || perfiles.length === 0) return;
   const cat = RULETA_CONFIG.categorias[categoriaActualIdx];
-  const ranking = rgCalcularTotales(perfiles, participantes, votos, cat.id);
+
+  calculando = true;
+  $("btn-girar").disabled = true;
+  $("btn-girar").textContent = "Calculando…";
+
+  let ranking;
+  try {
+    ranking = await rgCalcularTotales(perfiles, participantes, cat.id);
+  } catch (err) {
+    calculando = false;
+    mostrarError("No se pudieron leer los votos — probá de nuevo.");
+    actualizarRuletaCard();
+    return;
+  }
+  calculando = false;
+
   const winner = ranking[0];
   const winnerIndex = perfiles.findIndex(p => p.id === winner.perfil.id);
-  if (winnerIndex === -1) return;
+  if (winnerIndex === -1) { actualizarRuletaCard(); return; }
 
   girando = true;
   $("btn-girar").disabled = true;
@@ -492,7 +503,8 @@ $("btn-girar").addEventListener("click", () => {
 
   setTimeout(async () => {
     const resultado = { perfilId: winner.perfil.id, handle: winner.perfil.handle, total: winner.total };
-    await rgRevelarCategoria(cat.id, resultado);
+    try { await rgRevelarCategoria(cat.id, resultado); }
+    catch (err) { mostrarError("La ruleta giró pero no se pudo guardar el resultado — probá de nuevo."); }
     $("ganadora-box").innerHTML = `<span class="pill">${cat.emoji} ${winner.perfil.handle} — ${winner.total} pts</span>`;
     $("ranking-list").innerHTML = ranking.map((r, i) => `
       <div class="ranking-row"><span><span class="n">${i + 1}.</span>${r.perfil.handle}</span><span>${r.total} pts</span></div>
@@ -504,17 +516,39 @@ $("btn-girar").addEventListener("click", () => {
 
 /* ---- reiniciar ---- */
 $("btn-reiniciar").addEventListener("click", async () => {
-  if (!confirm("¿Reiniciar la ronda? Se borran perfiles, participantes, votos y resultados.")) return;
-  await rgReiniciarRonda();
+  if (!confirm("¿Reiniciar la ronda? Se pierden perfiles, participantes, votos y resultados — se crea una sala nueva con un QR nuevo.")) return;
+  const btn = $("btn-reiniciar");
+  btn.disabled = true;
+  try {
+    const nuevoId = await rgReiniciarRonda();
+    perfiles = []; participantes = []; estado = {};
+    mostrarQr(nuevoId);
+    renderPerfiles();
+    renderParticipantes();
+    girando = false; calculando = false;
+    actualizarRuletaCard();
+  } catch (err) {
+    mostrarError("No se pudo reiniciar — probá de nuevo.");
+  } finally {
+    btn.disabled = false;
+  }
 });
 
-/* ---- listeners en vivo ---- */
-if (RULETA_READY) {
+/* ---- arranque: resolvemos (o creamos) la sala y recién ahí escuchamos ---- */
+(async () => {
+  let roomId;
+  try {
+    roomId = await rgAbrirOCrearSalaDashboard();
+  } catch (err) {
+    mostrarError("No se pudo crear la sala — revisá tu conexión y recargá la página.");
+    return;
+  }
+  mostrarQr(roomId);
+
   rgEscucharPerfiles((lista) => { perfiles = lista; renderPerfiles(); if (!girando) actualizarRuletaCard(); });
   rgEscucharParticipantes((lista) => { participantes = lista; renderParticipantes(); });
-  rgEscucharVotos((lista) => { votos = lista; $("stat-votos").textContent = lista.length; });
   rgEscucharEstado((e) => { estado = e; if (!girando) actualizarRuletaCard(); });
-}
+})();
 </script>
 </body>
 </html>

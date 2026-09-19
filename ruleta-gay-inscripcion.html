@@ -252,12 +252,12 @@ main{ padding-bottom:clamp(48px,9vw,80px); }
 }
 @keyframes spin{ to{ transform:rotate(360deg); } }
 
-.setup-warning{
+.error-banner{
   margin-top:24px; padding:16px 18px; border:1px dashed var(--c-error);
   background:var(--c-error-soft); color:var(--c-white); font-size:13px; line-height:1.6;
   border-radius:12px;
 }
-.setup-warning strong{ color:var(--c-error); }
+.error-banner strong{ color:var(--c-error); }
 
 /* ============================================================
    4. FOOTER
@@ -286,6 +286,8 @@ main{ padding-bottom:clamp(48px,9vw,80px); }
 
   <hr class="divider">
 
+  <div class="error-banner" id="error-banner" hidden></div>
+
   <!-- PASO 1 — registro -->
   <section class="card" id="paso-registro">
     <h2 class="step-title">Sumate a la ruleta</h2>
@@ -299,11 +301,6 @@ main{ padding-bottom:clamp(48px,9vw,80px); }
       </div>
       <button type="submit" class="btn"><span>Subirme a la ruleta</span><span>🎉</span></button>
     </form>
-
-    <div class="setup-warning" id="setup-warning" hidden>
-      <strong>Ruleta aún no conectada.</strong> Avisale al anfitrión — falta configurar Firebase en
-      <code>assets/js/ruleta-gay.js</code> (instrucciones al inicio de ese archivo).
-    </div>
   </section>
 
   <!-- PASO 2 — votación -->
@@ -341,17 +338,25 @@ main{ padding-bottom:clamp(48px,9vw,80px); }
   <span>@segufitnesscl</span>
 </footer>
 
-<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
 <script src="assets/js/ruleta-gay.js"></script>
 <script>
 "use strict";
 
-if (!RULETA_READY) document.getElementById("setup-warning").hidden = false;
+const $ = (id) => document.getElementById(id);
 
-const STORAGE_KEY = "rg_participante_" + RULETA_CONFIG.eventId;
+function mostrarError(msg) {
+  const banner = $("error-banner");
+  banner.innerHTML = `<strong>Uy, algo falló.</strong> ${msg}`;
+  banner.hidden = false;
+}
 
-let participanteId = localStorage.getItem(STORAGE_KEY) || null;
+/* La sala viene siempre del link del QR (?r=...) — cada invitade
+   guarda su propio progreso (participanteId + votosBlobId) en este
+   celular, por evento, para poder resumir si recarga la página. */
+let salaId = null;
+let SESION_KEY = null;
+let participanteId = null;
+let votosBlobId = null;
 let participanteNombre = "";
 let perfiles = [];
 let categoriaIdx = 0;
@@ -359,19 +364,27 @@ let seleccionPerfilId = null;
 let seleccionPuntos = null;
 let categoriasVotadas = {};
 
-const $ = (id) => document.getElementById(id);
-
 function mostrarPaso(paso) {
   $("paso-registro").hidden = paso !== "registro";
   $("paso-votacion").hidden = paso !== "votacion";
   $("paso-listo").hidden = paso !== "listo";
 }
 
+function leerSesionGuardada() {
+  try {
+    const raw = localStorage.getItem(SESION_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) { return null; }
+}
+function guardarSesion() {
+  try {
+    localStorage.setItem(SESION_KEY, JSON.stringify({ participanteId, votosBlobId, nombre: participanteNombre }));
+  } catch (e) { /* modo privado, no pasa nada */ }
+}
+
 /* ---- registro ---- */
 $("registro-form").addEventListener("submit", async (e) => {
   e.preventDefault();
-  if (!RULETA_READY) { $("setup-warning").hidden = false; return; }
-
   const nombre = $("in-nombre").value.trim();
   const valido = nombre.length >= 2;
   $("field-nombre").classList.toggle("has-error", !valido);
@@ -380,10 +393,14 @@ $("registro-form").addEventListener("submit", async (e) => {
   const btn = e.target.querySelector(".btn");
   btn.disabled = true;
   try {
-    participanteId = await rgRegistrarParticipante(nombre);
+    const r = await rgRegistrarParticipante(nombre);
+    participanteId = r.participanteId;
+    votosBlobId = r.votosBlobId;
     participanteNombre = nombre;
-    localStorage.setItem(STORAGE_KEY, participanteId);
+    guardarSesion();
     iniciarVotacion();
+  } catch (err) {
+    mostrarError("No pudimos anotarte — revisá tu conexión y probá de nuevo. (" + err.message + ")");
   } finally {
     btn.disabled = false;
   }
@@ -485,15 +502,18 @@ $("btn-siguiente").addEventListener("click", async () => {
   const btn = $("btn-siguiente");
   btn.disabled = true;
   try {
-    await rgEmitirVoto(participanteId, cat.id, seleccionPerfilId, seleccionPuntos);
+    await rgEmitirVoto(votosBlobId, cat.id, seleccionPerfilId, seleccionPuntos);
     categoriasVotadas[cat.id] = true;
     categoriaIdx = primeraCategoriaPendiente();
     if (categoriaIdx === -1) {
       mostrarPaso("listo");
       $("listo-nombre").textContent = participanteNombre || "";
+      rgMarcarParticipanteCompleto(participanteId).catch(() => {});
     } else {
       renderCategoriaActual();
     }
+  } catch (err) {
+    mostrarError("No se pudo guardar tu voto — revisá tu conexión y probá de nuevo.");
   } finally {
     btn.disabled = false;
   }
@@ -524,24 +544,38 @@ function renderResultados(revelado) {
   });
 }
 
-/* ---- resumen de sesión (si ya se registró antes en este celular) ---- */
+/* ---- resumen de sesión (si ya se registró antes en este celular, para esta sala) ---- */
 async function retomarSesion() {
-  if (!RULETA_READY || !participanteId) return;
-  const p = await rgObtenerParticipante(participanteId);
-  if (!p) { participanteId = null; localStorage.removeItem(STORAGE_KEY); return; }
-  participanteNombre = p.nombre;
-  categoriasVotadas = p.categoriasVotadas || {};
+  const sesion = leerSesionGuardada();
+  if (!sesion || !sesion.participanteId) return;
+  participanteId = sesion.participanteId;
+  votosBlobId = sesion.votosBlobId;
+  participanteNombre = sesion.nombre || "";
+  const votos = await rgLeerVotosPropios(votosBlobId);
+  categoriasVotadas = {};
+  Object.keys(votos || {}).forEach((catId) => { categoriasVotadas[catId] = true; });
   iniciarVotacion();
 }
 
-if (RULETA_READY) {
+(async () => {
+  try {
+    salaId = await rgUnirseASala();
+  } catch (err) {
+    mostrarError(err.message);
+    $("registro-form").querySelector(".btn").disabled = true;
+    return;
+  }
+  SESION_KEY = "rg_yo_" + salaId;
+
   rgEscucharPerfiles((lista) => {
     perfiles = lista;
     if (!$("paso-votacion").hidden) renderPerfiles();
   });
   rgEscucharEstado((estado) => renderResultados(estado.revelado));
-  retomarSesion();
-}
+
+  try { await retomarSesion(); }
+  catch (err) { /* si falla el resumen, se queda en la pantalla de registro */ }
+})();
 </script>
 </body>
 </html>
