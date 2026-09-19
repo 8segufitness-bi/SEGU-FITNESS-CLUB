@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<!--
+  RULETA GAY AMIGXS — panel del moderador/anfitrión
+  ---------------------------------------------------------------
+  QUÉ ES ESTE ARCHIVO
+  Panel privado para quien organiza el juego (no compartir el link
+  de esta página, solo el QR de inscripción). Desde acá se:
+  1. Muestra el QR que la gente escanea para anotarse y votar
+     (apunta a ruleta-gay-inscripcion.html).
+  2. Cargan los perfiles de Instagram candidatos.
+  3. Ve en vivo quién se anotó y se marca a une participante como
+     VIP — su voto vale x3 en vez de x1 en TODAS las categorías.
+  4. Activa la ruleta: por cada categoría gira la ruleta y revela
+     a la ganadora (la que sumó más puntos, ya ponderados). Se
+     revela una categoría a la vez, en el orden de la config.
+
+  Requiere el mismo proyecto Firebase configurado en
+  assets/js/ruleta-gay.js (instrucciones al inicio de ese archivo).
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ruleta Gay Amigxs — Panel del Anfitrión</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="assets/brand/segu-logo.png" type="image/png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; }
+body,h1,h2,h3,p,dl,dd,dt,fieldset,legend{ margin:0; }
+ul{ list-style:none; margin:0; padding:0; }
+img{ max-width:100%; display:block; }
+button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
+input{ font:inherit; color:inherit; }
+[hidden]{ display:none !important; }
+
+:root{
+  --c-black:#08070c;
+  --c-white:#faf8ff;
+  --c-gray-700:#3a3745;
+  --c-gray-500:#8a86a0;
+  --c-gray-300:#c7c3da;
+  --c-error:#ff4d6d;
+  --c-error-soft:rgba(255,77,109,.12);
+  --c-success:#3ddc84;
+
+  --rb-red:#ff3355; --rb-orange:#ff9a2e; --rb-yellow:#ffe14d;
+  --rb-green:#3ddc84; --rb-blue:#3ea8ff; --rb-purple:#c26bff;
+  --rb-gradient: linear-gradient(90deg, var(--rb-red), var(--rb-orange), var(--rb-yellow), var(--rb-green), var(--rb-blue), var(--rb-purple));
+
+  --ff-display:'Anton', 'Arial Narrow', Impact, sans-serif;
+  --ff-serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --ff-body:'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+
+  --edge: clamp(20px, 5vw, 48px);
+  --maxw: 880px;
+  --line: rgba(250,248,255,.16);
+}
+
+body{
+  font-family:var(--ff-body);
+  background:
+    radial-gradient(55% 38% at 10% -6%, rgba(255,51,85,.20), transparent 60%),
+    radial-gradient(50% 36% at 100% 0%, rgba(62,168,255,.18), transparent 60%),
+    var(--c-black);
+  color:var(--c-white);
+  font-size:16px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  min-height:100svh;
+}
+.wrap{ max-width:var(--maxw); margin:0 auto; padding:0 var(--edge); }
+.rb-text{
+  background:var(--rb-gradient); background-size:200% auto;
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.divider{ height:1px; background:var(--line); border:0; width:100%; margin:32px 0; }
+
+.siteheader{
+  display:flex; align-items:center; gap:10px;
+  padding:22px var(--edge);
+  font-family:var(--ff-body); font-weight:800; font-size:12px;
+  letter-spacing:.2em; text-transform:uppercase;
+}
+.siteheader img{ width:20px; height:20px; border-radius:50%; }
+.siteheader .dot{ width:6px; height:6px; border-radius:50%; background:var(--rb-gradient); }
+
+main{ padding-bottom:80px; }
+.hero{ padding:clamp(16px,4vw,28px) 0; }
+.hero h1{
+  font-family:var(--ff-display); text-transform:uppercase; letter-spacing:.01em;
+  font-size:clamp(1.8rem,6vw,2.6rem); line-height:.95;
+}
+.hero p{ margin-top:10px; color:var(--c-gray-300); font-size:14px; max-width:56ch; }
+
+.grid2{ display:grid; gap:24px; grid-template-columns:1fr; }
+@media (min-width:760px){ .grid2{ grid-template-columns:1fr 1fr; } }
+
+.card{
+  border:1px solid var(--line); border-radius:18px;
+  padding:clamp(20px,4vw,26px); background:rgba(250,248,255,.03);
+}
+.card h2{
+  font-family:var(--ff-display); text-transform:uppercase; letter-spacing:.01em;
+  font-size:clamp(1.1rem,3.6vw,1.3rem);
+  display:flex; align-items:center; gap:8px;
+}
+.card .sub{ margin-top:6px; color:var(--c-gray-300); font-size:13px; line-height:1.55; }
+
+/* --- QR --- */
+#qr-box{
+  margin-top:18px; display:flex; justify-content:center; padding:14px;
+  background:#fff; border-radius:14px; width:fit-content; margin-left:auto; margin-right:auto;
+}
+.link-row{
+  margin-top:14px; display:flex; gap:8px; align-items:center;
+  border:1px solid var(--line); border-radius:99px; padding:8px 8px 8px 16px;
+}
+.link-row input{
+  flex:1; background:transparent; border:0; color:var(--c-gray-300); font-size:12px; min-width:0;
+}
+.link-row button{
+  font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  background:var(--rb-gradient); color:var(--c-black); padding:8px 14px; border-radius:99px; flex:none;
+}
+
+/* --- form perfiles --- */
+.perfil-form{ display:flex; gap:8px; margin-top:16px; }
+.perfil-form input{
+  flex:1; background:transparent; border:1px solid var(--line); border-radius:10px;
+  color:var(--c-white); font-size:14px; padding:12px 14px; min-width:0;
+}
+.perfil-form input::placeholder{ color:var(--c-gray-500); }
+.perfil-form button{
+  flex:none; background:var(--rb-gradient); color:var(--c-black); font-weight:800;
+  font-size:12px; letter-spacing:.08em; text-transform:uppercase; padding:0 18px; border-radius:10px;
+}
+
+.lista{ margin-top:16px; display:flex; flex-direction:column; gap:8px; max-height:280px; overflow-y:auto; }
+.lista-item{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-size:13.5px;
+}
+.lista-item a{ color:var(--c-white); text-decoration:underline; }
+.lista-item .x{ color:var(--c-error); font-weight:800; font-size:14px; flex:none; }
+.lista-vacia{ color:var(--c-gray-500); font-size:13px; padding:14px 0; text-align:center; }
+
+/* --- participantes --- */
+.participante{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  border:1px solid var(--line); border-radius:10px; padding:10px 12px;
+}
+.participante .nombre{ font-weight:700; font-size:14px; }
+.participante .votos{ font-size:11.5px; color:var(--c-gray-300); }
+.participante.is-vip{ border-color:var(--rb-purple); background:rgba(194,107,255,.08); }
+.vip-btn{
+  font-size:11px; font-weight:700; letter-spacing:.04em; padding:6px 10px; border-radius:99px;
+  border:1px solid var(--line); flex:none; white-space:nowrap;
+}
+.vip-btn.is-vip{ background:var(--rb-gradient); color:var(--c-black); border-color:transparent; }
+
+.stat-row{ display:flex; gap:18px; margin-top:14px; }
+.stat{ font-size:12px; color:var(--c-gray-300); }
+.stat b{ display:block; font-family:var(--ff-display); font-size:1.4rem; color:var(--c-white); }
+
+/* --- ruleta / activación --- */
+.ruleta-card{ margin-top:24px; text-align:center; }
+.ruleta-wrap{
+  position:relative; width:min(280px,80vw); aspect-ratio:1; margin:20px auto 0;
+}
+.ruleta-puntero{
+  position:absolute; top:-6px; left:50%; transform:translateX(-50%);
+  width:0; height:0; border-left:12px solid transparent; border-right:12px solid transparent;
+  border-top:20px solid var(--c-white); z-index:2; filter:drop-shadow(0 2px 4px rgba(0,0,0,.4));
+}
+#ruleta-canvas{
+  width:100%; height:100%; border-radius:50%; display:block;
+  box-shadow:0 0 0 6px rgba(250,248,255,.08);
+  transition:transform 4.2s cubic-bezier(.12,.67,.1,1);
+}
+.ganadora-box{ margin-top:18px; min-height:26px; font-size:14px; }
+.ganadora-box .pill{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:var(--ff-display); font-size:16px;
+  background:var(--rb-gradient); color:var(--c-black); padding:8px 18px; border-radius:99px;
+}
+.btn{
+  margin-top:18px; background:var(--rb-gradient); color:var(--c-black);
+  font-family:var(--ff-body); font-weight:800; font-size:13px;
+  letter-spacing:.1em; text-transform:uppercase; padding:16px 28px; border-radius:99px;
+  display:inline-flex; align-items:center; gap:10px;
+}
+.btn:disabled{ opacity:.35; pointer-events:none; }
+.btn-ghost{ background:transparent; border:1px solid var(--line); color:var(--c-white); }
+.btn-danger{ background:transparent; border:1px solid var(--c-error); color:var(--c-error); }
+
+.ranking-list{ margin-top:16px; text-align:left; }
+.ranking-row{
+  display:flex; align-items:center; justify-content:space-between;
+  font-size:13px; padding:8px 0; border-bottom:1px solid var(--line);
+}
+.ranking-row:last-child{ border-bottom:0; }
+.ranking-row .n{ color:var(--c-gray-500); width:22px; flex:none; }
+
+.categorias-todas{ display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; justify-content:center; }
+.cat-chip{
+  font-size:11.5px; padding:6px 12px; border-radius:99px; border:1px solid var(--line); color:var(--c-gray-300);
+}
+.cat-chip.is-revelada{ background:var(--rb-gradient); color:var(--c-black); border-color:transparent; font-weight:700; }
+
+.setup-warning{
+  margin-top:20px; padding:16px 18px; border:1px dashed var(--c-error);
+  background:var(--c-error-soft); font-size:13px; line-height:1.6; border-radius:12px;
+}
+.setup-warning strong{ color:var(--c-error); }
+
+.sitefooter{
+  border-top:1px solid var(--line); padding:24px var(--edge) 40px;
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  font-size:11px; letter-spacing:.06em; color:var(--c-gray-500);
+}
+</style>
+</head>
+<body>
+
+<header class="siteheader">
+  <img src="assets/brand/segu-logo.png" alt="" onerror="this.style.display='none'">
+  Ruleta Gay Amigxs — Panel del Anfitrión <span class="dot"></span>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1 class="rb-text">Panel del Anfitrión</h1>
+    <p>Mostrá el QR para que la gente se sume, cargá los perfiles de Instagram, marcá a la persona VIP (x3) y activá la ruleta cuando estén listos los votos.</p>
+  </section>
+
+  <div class="setup-warning" id="setup-warning" hidden>
+    <strong>Ruleta aún no conectada.</strong> Falta configurar Firebase en
+    <code>assets/js/ruleta-gay.js</code> — seguí las instrucciones que están al
+    inicio de ese archivo (crear proyecto gratis, pegar las credenciales). Mientras
+    tanto este panel no puede leer ni guardar datos.
+  </div>
+
+  <div class="grid2" style="margin-top:24px;">
+    <section class="card">
+      <h2>📲 QR de inscripción</h2>
+      <p class="sub">Proyectalo o compartilo — apunta a la página donde la gente se anota y vota.</p>
+      <div id="qr-box"></div>
+      <div class="link-row">
+        <input id="qr-link" readonly>
+        <button type="button" id="copiar-link">Copiar</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>🌈 Perfiles de Instagram</h2>
+      <p class="sub">Pegá el link o @usuario de cada perfil candidato.</p>
+      <form class="perfil-form" id="perfil-form">
+        <input id="in-url" type="text" placeholder="instagram.com/usuario o @usuario" autocomplete="off">
+        <button type="submit">Agregar</button>
+      </form>
+      <div class="lista" id="perfiles-lista"></div>
+    </section>
+  </div>
+
+  <section class="card" style="margin-top:24px;">
+    <h2>🙋 Participantes en la ruleta</h2>
+    <div class="stat-row">
+      <div class="stat"><b id="stat-participantes">0</b>anotades</div>
+      <div class="stat"><b id="stat-perfiles">0</b>perfiles cargados</div>
+      <div class="stat"><b id="stat-votos">0</b>votos emitidos</div>
+    </div>
+    <p class="sub" style="margin-top:14px;">Tocá 👑 para que una persona vote con peso x3 en todas las categorías (solo puede haber une VIP a la vez).</p>
+    <div class="lista" id="participantes-lista" style="margin-top:12px;"></div>
+  </section>
+
+  <section class="card ruleta-card">
+    <h2 style="justify-content:center;">🎡 Activar la ruleta</h2>
+    <p class="sub">Se revela una categoría por vez, en este orden. La ruleta gira y se detiene en quien sumó más puntos (puntaje 1–7 × peso del voto).</p>
+
+    <div class="categorias-todas" id="categorias-todas"></div>
+
+    <div class="ruleta-wrap">
+      <div class="ruleta-puntero"></div>
+      <canvas id="ruleta-canvas" width="600" height="600"></canvas>
+    </div>
+
+    <div class="ganadora-box" id="ganadora-box"></div>
+    <div class="ranking-list" id="ranking-list"></div>
+
+    <div>
+      <button type="button" class="btn" id="btn-girar">Girar y revelar</button>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:24px;">
+    <h2>♻️ Nueva ronda</h2>
+    <p class="sub">Borra perfiles, participantes, votos y resultados de este evento para arrancar de cero (no se puede deshacer).</p>
+    <button type="button" class="btn btn-danger" id="btn-reiniciar" style="margin-top:14px;">Reiniciar ronda</button>
+  </section>
+</main>
+
+<footer class="sitefooter">
+  <span>SEGU Fitness Club — Quinta 262, Viña del Mar</span>
+  <span>@segufitnesscl</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+<script src="assets/js/ruleta-gay.js"></script>
+<script>
+"use strict";
+
+if (!RULETA_READY) document.getElementById("setup-warning").hidden = false;
+
+const $ = (id) => document.getElementById(id);
+const COLORES = ["#ff3355", "#ff9a2e", "#ffe14d", "#3ddc84", "#3ea8ff", "#c26bff"];
+
+let perfiles = [];
+let participantes = [];
+let votos = [];
+let estado = {};
+
+/* ---- QR ---- */
+const qrUrl = window.location.href.replace(/ruleta-gay-dashboard\.html.*$/, "ruleta-gay-inscripcion.html");
+$("qr-link").value = qrUrl;
+if (window.QRCode) new QRCode($("qr-box"), { text: qrUrl, width: 176, height: 176, colorDark: "#08070c", colorLight: "#ffffff" });
+$("copiar-link").addEventListener("click", () => {
+  navigator.clipboard.writeText(qrUrl).then(() => {
+    $("copiar-link").textContent = "¡Copiado!";
+    setTimeout(() => { $("copiar-link").textContent = "Copiar"; }, 1500);
+  });
+});
+
+/* ---- perfiles ---- */
+$("perfil-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!RULETA_READY) return;
+  const val = $("in-url").value.trim();
+  if (!val) return;
+  const btn = e.target.querySelector("button");
+  btn.disabled = true;
+  try { await rgAgregarPerfil(val); $("in-url").value = ""; }
+  finally { btn.disabled = false; }
+});
+
+function renderPerfiles() {
+  $("stat-perfiles").textContent = perfiles.length;
+  const cont = $("perfiles-lista");
+  if (perfiles.length === 0) { cont.innerHTML = `<p class="lista-vacia">Todavía no cargaste perfiles.</p>`; return; }
+  cont.innerHTML = "";
+  perfiles.forEach((pf) => {
+    const row = document.createElement("div");
+    row.className = "lista-item";
+    row.innerHTML = `<a href="${pf.url}" target="_blank" rel="noopener">${pf.handle}</a><button type="button" class="x" title="Eliminar">✕</button>`;
+    row.querySelector(".x").addEventListener("click", () => rgEliminarPerfil(pf.id));
+    cont.appendChild(row);
+  });
+}
+
+/* ---- participantes ---- */
+function categoriasCompletas(p) {
+  const votadas = p.categoriasVotadas || {};
+  return RULETA_CONFIG.categorias.filter(c => votadas[c.id]).length;
+}
+function renderParticipantes() {
+  $("stat-participantes").textContent = participantes.length;
+  const cont = $("participantes-lista");
+  if (participantes.length === 0) { cont.innerHTML = `<p class="lista-vacia">Todavía no se anotó nadie.</p>`; return; }
+  cont.innerHTML = "";
+  participantes.forEach((p) => {
+    const row = document.createElement("div");
+    row.className = "participante" + (p.isVip ? " is-vip" : "");
+    const completas = categoriasCompletas(p);
+    row.innerHTML = `
+      <span>
+        <span class="nombre">${p.nombre}</span><br>
+        <span class="votos">${completas}/${RULETA_CONFIG.categorias.length} categorías votadas</span>
+      </span>
+      <button type="button" class="vip-btn${p.isVip ? " is-vip" : ""}">${p.isVip ? "👑 VIP ×3 — quitar" : "👑 Hacer VIP"}</button>
+    `;
+    row.querySelector(".vip-btn").addEventListener("click", () => {
+      p.isVip ? rgQuitarVip(p.id) : rgMarcarVip(p.id);
+    });
+    cont.appendChild(row);
+  });
+}
+
+/* ---- ruleta / activación ---- */
+let girando = false;
+let categoriaActualIdx = 0;
+
+function primeraNoRevelada() {
+  const revelado = estado.revelado || {};
+  for (let i = 0; i < RULETA_CONFIG.categorias.length; i++) {
+    if (!revelado[RULETA_CONFIG.categorias[i].id]) return i;
+  }
+  return -1;
+}
+
+function renderChipsCategorias() {
+  const revelado = estado.revelado || {};
+  const cont = $("categorias-todas");
+  cont.innerHTML = "";
+  RULETA_CONFIG.categorias.forEach((c) => {
+    const chip = document.createElement("span");
+    chip.className = "cat-chip" + (revelado[c.id] ? " is-revelada" : "");
+    chip.textContent = c.emoji + " " + c.nombre;
+    cont.appendChild(chip);
+  });
+}
+
+function dibujarRuleta(canvas, entradas) {
+  const ctx = canvas.getContext("2d");
+  const size = canvas.width;
+  const cx = size / 2, cy = size / 2, radius = size / 2 - 6;
+  const n = Math.max(entradas.length, 1);
+  const segAngulo = (2 * Math.PI) / n;
+  ctx.clearRect(0, 0, size, size);
+  entradas.forEach((e, i) => {
+    const start = -Math.PI / 2 + i * segAngulo;
+    const end = start + segAngulo;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, radius, start, end);
+    ctx.closePath();
+    ctx.fillStyle = COLORES[i % COLORES.length];
+    ctx.fill();
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(start + segAngulo / 2);
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#08070c";
+    ctx.font = "700 22px Inter, sans-serif";
+    ctx.fillText(e.label, radius - 20, 8);
+    ctx.restore();
+  });
+}
+
+function actualizarRuletaCard() {
+  renderChipsCategorias();
+  categoriaActualIdx = primeraNoRevelada();
+  const canvas = $("ruleta-canvas");
+  const btn = $("btn-girar");
+  const ganadoraBox = $("ganadora-box");
+  const rankingList = $("ranking-list");
+
+  if (categoriaActualIdx === -1) {
+    btn.hidden = true;
+    ganadoraBox.innerHTML = `<span class="pill">🎉 ¡Todas las categorías reveladas!</span>`;
+    return;
+  }
+  btn.hidden = false;
+  btn.disabled = girando || perfiles.length === 0;
+  btn.textContent = "Girar y revelar — " + RULETA_CONFIG.categorias[categoriaActualIdx].nombre;
+
+  if (!girando) {
+    dibujarRuleta(canvas, perfiles.map(p => ({ label: p.handle })));
+    canvas.style.transition = "none";
+    canvas.style.transform = "rotate(0deg)";
+    ganadoraBox.innerHTML = perfiles.length === 0
+      ? `<span style="color:var(--c-gray-300);font-size:13px;">Cargá al menos un perfil para poder girar.</span>` : "";
+    rankingList.innerHTML = "";
+  }
+}
+
+$("btn-girar").addEventListener("click", () => {
+  if (girando || categoriaActualIdx === -1 || perfiles.length === 0) return;
+  const cat = RULETA_CONFIG.categorias[categoriaActualIdx];
+  const ranking = rgCalcularTotales(perfiles, participantes, votos, cat.id);
+  const winner = ranking[0];
+  const winnerIndex = perfiles.findIndex(p => p.id === winner.perfil.id);
+  if (winnerIndex === -1) return;
+
+  girando = true;
+  $("btn-girar").disabled = true;
+  $("ganadora-box").textContent = "";
+
+  const canvas = $("ruleta-canvas");
+  const n = perfiles.length;
+  const segAnguloDeg = 360 / n;
+  const centroDesdeArriba = winnerIndex * segAnguloDeg + segAnguloDeg / 2;
+  const rotacionFinal = 360 * 5 + ((360 - centroDesdeArriba) % 360);
+
+  canvas.style.transition = "transform 4.2s cubic-bezier(.12,.67,.1,1)";
+  requestAnimationFrame(() => { canvas.style.transform = `rotate(${rotacionFinal}deg)`; });
+
+  setTimeout(async () => {
+    const resultado = { perfilId: winner.perfil.id, handle: winner.perfil.handle, total: winner.total };
+    await rgRevelarCategoria(cat.id, resultado);
+    $("ganadora-box").innerHTML = `<span class="pill">${cat.emoji} ${winner.perfil.handle} — ${winner.total} pts</span>`;
+    $("ranking-list").innerHTML = ranking.map((r, i) => `
+      <div class="ranking-row"><span><span class="n">${i + 1}.</span>${r.perfil.handle}</span><span>${r.total} pts</span></div>
+    `).join("");
+    girando = false;
+    actualizarRuletaCard();
+  }, 4300);
+});
+
+/* ---- reiniciar ---- */
+$("btn-reiniciar").addEventListener("click", async () => {
+  if (!confirm("¿Reiniciar la ronda? Se borran perfiles, participantes, votos y resultados.")) return;
+  await rgReiniciarRonda();
+});
+
+/* ---- listeners en vivo ---- */
+if (RULETA_READY) {
+  rgEscucharPerfiles((lista) => { perfiles = lista; renderPerfiles(); if (!girando) actualizarRuletaCard(); });
+  rgEscucharParticipantes((lista) => { participantes = lista; renderParticipantes(); });
+  rgEscucharVotos((lista) => { votos = lista; $("stat-votos").textContent = lista.length; });
+  rgEscucharEstado((e) => { estado = e; if (!girando) actualizarRuletaCard(); });
+}
+</script>
+</body>
+</html>

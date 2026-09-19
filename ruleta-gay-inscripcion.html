@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<!--
+  RULETA GAY AMIGXS — página pública de inscripción y votación
+  ---------------------------------------------------------------
+  QUÉ ES ESTE ARCHIVO
+  Es la página a la que apunta el QR de la fiesta. Cada invitade la
+  abre desde su propio celular, escribe su nombre ("se sube a la
+  ruleta"), y después vota: por cada categoría elige 1 perfil de
+  Instagram (de los que cargó el anfitrión en el dashboard) y le
+  pone puntaje de 1 a 7. Todo se guarda en tiempo real en Firestore
+  — ver assets/js/ruleta-gay.js para la configuración (hay que
+  pegar ahí los datos de un proyecto Firebase antes de usar esto en
+  una fiesta real; mientras tanto esta página avisa que falta ese
+  paso, no se rompe).
+
+  El panel del anfitrión/moderador está en ruleta-gay-dashboard.html
+  (ahí se cargan los perfiles, se marca quién es VIP x3 y se activa
+  la ruleta para revelar ganadoras).
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ruleta Gay Amigxs — Sumate</title>
+<meta name="description" content="Escaneaste el QR: registrate y votá en la Ruleta Gay Amigxs.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="assets/brand/segu-logo.png" type="image/png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   0. RESET + BASE
+   ============================================================ */
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; }
+body,h1,h2,h3,p,dl,dd,dt,fieldset,legend{ margin:0; }
+ul{ list-style:none; margin:0; padding:0; }
+img{ max-width:100%; display:block; }
+button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
+input{ font:inherit; color:inherit; }
+[hidden]{ display:none !important; }
+
+:root{
+  --c-black:#08070c;
+  --c-white:#faf8ff;
+  --c-gray-700:#3a3745;
+  --c-gray-500:#8a86a0;
+  --c-gray-300:#c7c3da;
+  --c-error:#ff4d6d;
+  --c-error-soft:rgba(255,77,109,.12);
+
+  --rb-red:#ff3355;
+  --rb-orange:#ff9a2e;
+  --rb-yellow:#ffe14d;
+  --rb-green:#3ddc84;
+  --rb-blue:#3ea8ff;
+  --rb-purple:#c26bff;
+  --rb-gradient: linear-gradient(90deg, var(--rb-red), var(--rb-orange), var(--rb-yellow), var(--rb-green), var(--rb-blue), var(--rb-purple));
+
+  --ff-display:'Anton', 'Arial Narrow', Impact, sans-serif;
+  --ff-serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --ff-body:'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+
+  --edge: clamp(20px, 6vw, 48px);
+  --maxw: 640px;
+  --line: rgba(250,248,255,.16);
+}
+
+body{
+  font-family:var(--ff-body);
+  background:
+    radial-gradient(60% 42% at 12% -6%, rgba(255,51,85,.22), transparent 60%),
+    radial-gradient(55% 40% at 100% 0%, rgba(62,168,255,.20), transparent 60%),
+    radial-gradient(60% 45% at 50% 110%, rgba(194,107,255,.18), transparent 60%),
+    var(--c-black);
+  color:var(--c-white);
+  font-size:16px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  min-height:100svh;
+}
+
+.wrap{ max-width:var(--maxw); margin:0 auto; padding:0 var(--edge); }
+
+.eyebrow{
+  font-family:var(--ff-body); font-weight:700; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--c-gray-300);
+  display:flex; align-items:center; gap:10px;
+}
+.eyebrow::before{ content:''; width:9px; height:9px; border-radius:50%; background:var(--rb-gradient); flex:none; }
+
+.divider{ height:1px; background:var(--line); border:0; width:100%; }
+
+.rb-text{
+  background:var(--rb-gradient); background-size:200% auto;
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  animation:rb-shift 6s linear infinite;
+}
+@keyframes rb-shift{ to{ background-position:200% center; } }
+
+/* ============================================================
+   1. HEADER
+   ============================================================ */
+.siteheader{
+  display:flex; align-items:center; gap:10px;
+  padding:22px var(--edge);
+  font-family:var(--ff-body); font-weight:800; font-size:12px;
+  letter-spacing:.2em; text-transform:uppercase;
+}
+.siteheader img{ width:20px; height:20px; border-radius:50%; }
+.siteheader .dot{ width:6px; height:6px; border-radius:50%; background:var(--rb-gradient); }
+
+/* ============================================================
+   2. HERO
+   ============================================================ */
+.hero{ padding:clamp(20px,5vw,36px) 0 clamp(24px,5vw,36px); text-align:center; }
+.hero .wheel-emoji{ font-size:clamp(2.4rem,10vw,3.2rem); display:block; filter:drop-shadow(0 6px 24px rgba(194,107,255,.35)); }
+.hero h1{
+  font-family:var(--ff-display); text-transform:uppercase; letter-spacing:.01em;
+  line-height:.94; margin-top:10px;
+  font-size:clamp(2.1rem, 9vw, 3rem);
+  text-wrap:balance;
+}
+.hero .bajada{
+  font-family:var(--ff-serif); font-style:italic; font-weight:400;
+  color:var(--c-gray-300); line-height:1.4;
+  font-size:clamp(1rem, 3.4vw, 1.2rem);
+  margin:12px auto 0; max-width:38ch;
+}
+
+/* ============================================================
+   3. TARJETAS / SECCIONES GENERALES
+   ============================================================ */
+main{ padding-bottom:clamp(48px,9vw,80px); }
+.card{
+  border:1px solid var(--line); border-radius:18px;
+  padding:clamp(20px,5vw,28px); margin-top:22px;
+  background:rgba(250,248,255,.03);
+}
+.step-title{
+  font-family:var(--ff-display); text-transform:uppercase; letter-spacing:.01em;
+  font-size:clamp(1.3rem,5vw,1.7rem); line-height:1.05;
+}
+.step-sub{ margin-top:8px; color:var(--c-gray-300); font-size:14px; line-height:1.55; }
+
+/* progreso de categorías (puntitos tipo ruleta) */
+.progreso{ display:flex; align-items:center; gap:8px; margin-top:18px; }
+.progreso .seg{
+  flex:1; height:6px; border-radius:99px; background:rgba(250,248,255,.12); overflow:hidden;
+}
+.progreso .seg.is-done, .progreso .seg.is-current{ background:var(--rb-gradient); }
+.progreso .seg.is-current{ opacity:.55; }
+
+/* ---- form registro ---- */
+.field-label{
+  display:block; font-family:var(--ff-body); font-weight:700; font-size:11px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--c-gray-300);
+  margin-bottom:10px;
+}
+.field{ margin-bottom:18px; }
+.field input{
+  width:100%; background:transparent; border:0; border-bottom:1px solid var(--line);
+  color:var(--c-white); font-size:19px; padding:10px 2px 12px;
+  transition:border-color .2s ease;
+}
+.field input::placeholder{ color:var(--c-gray-500); }
+.field input:focus{ outline:0; border-bottom-color:var(--rb-purple); }
+.field.has-error input{ border-bottom-color:var(--c-error); }
+.field .err{ display:none; margin-top:8px; font-size:12.5px; color:var(--c-error); }
+.field.has-error .err{ display:block; }
+
+.btn{
+  width:100%; margin-top:6px;
+  background:var(--rb-gradient); background-size:200% auto; color:var(--c-black);
+  font-family:var(--ff-body); font-weight:800; font-size:13px;
+  letter-spacing:.14em; text-transform:uppercase;
+  padding:18px 24px; border-radius:99px;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  transition:background-position .3s ease, transform .1s ease, opacity .2s ease;
+}
+.btn:hover{ background-position:100% center; }
+.btn:active{ transform:scale(.99); }
+.btn:disabled{ opacity:.35; pointer-events:none; }
+.btn.btn-ghost{
+  background:transparent; color:var(--c-white); border:1px solid var(--line);
+}
+
+/* ---- perfiles (votación) ---- */
+.perfiles-grid{ display:grid; gap:12px; margin-top:18px; }
+.perfil-opt{
+  position:relative; display:flex; align-items:center; gap:12px; cursor:pointer;
+  border:1px solid var(--line); border-radius:14px;
+  padding:14px 16px; transition:border-color .2s ease, background .2s ease;
+}
+.perfil-opt input{ position:absolute; opacity:0; width:1px; height:1px; }
+.perfil-opt .avatar{
+  width:42px; height:42px; border-radius:50%; flex:none;
+  background:var(--rb-gradient);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--ff-display); font-size:16px; color:var(--c-black);
+}
+.perfil-opt .info{ flex:1; min-width:0; }
+.perfil-opt .handle{ font-weight:700; font-size:15px; }
+.perfil-opt .ver{ font-size:12px; color:var(--c-gray-300); text-decoration:underline; }
+.perfil-opt .check{
+  width:20px; height:20px; border-radius:50%; border:1px solid var(--c-gray-500); flex:none;
+}
+.perfil-opt.is-checked{ border-color:var(--rb-purple); background:rgba(194,107,255,.08); }
+.perfil-opt.is-checked .check{ border-color:var(--rb-purple); background:var(--rb-gradient); }
+.perfiles-empty{
+  margin-top:18px; padding:18px; border:1px dashed var(--line); border-radius:14px;
+  color:var(--c-gray-300); font-size:13.5px; text-align:center; line-height:1.6;
+}
+
+/* ---- puntaje 1-7 ---- */
+.puntaje-label{
+  margin-top:24px; display:block; font-family:var(--ff-body); font-weight:700;
+  font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--c-gray-300);
+}
+.puntaje-row{ display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-top:12px; }
+.pt-btn{
+  aspect-ratio:1; border-radius:12px; border:1px solid var(--line);
+  font-family:var(--ff-display); font-size:17px;
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .12s ease, border-color .2s ease, background .2s ease;
+}
+.pt-btn.is-selected{ background:var(--rb-gradient); color:var(--c-black); border-color:transparent; transform:scale(1.06); }
+
+/* ---- pantalla final / resultados ---- */
+.done-emoji{ font-size:3rem; text-align:center; display:block; }
+.resultado-item{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:14px 0; border-bottom:1px solid var(--line);
+}
+.resultado-item:last-child{ border-bottom:0; }
+.resultado-item .nombre-cat{ font-weight:700; }
+.resultado-item .ganador{ color:var(--c-gray-300); font-size:13.5px; }
+.resultado-item .pill{
+  font-family:var(--ff-display); font-size:13px;
+  background:var(--rb-gradient); color:var(--c-black); padding:4px 12px; border-radius:99px;
+}
+.espera-pill{
+  display:inline-flex; align-items:center; gap:8px; margin-top:6px;
+  font-size:12px; letter-spacing:.06em; color:var(--c-gray-300);
+}
+.espera-pill .spin{
+  width:10px; height:10px; border-radius:50%; border:2px solid var(--c-gray-500);
+  border-top-color:var(--rb-purple); animation:spin .8s linear infinite;
+}
+@keyframes spin{ to{ transform:rotate(360deg); } }
+
+.setup-warning{
+  margin-top:24px; padding:16px 18px; border:1px dashed var(--c-error);
+  background:var(--c-error-soft); color:var(--c-white); font-size:13px; line-height:1.6;
+  border-radius:12px;
+}
+.setup-warning strong{ color:var(--c-error); }
+
+/* ============================================================
+   4. FOOTER
+   ============================================================ */
+.sitefooter{
+  border-top:1px solid var(--line); padding:24px var(--edge) 40px;
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  font-size:11px; letter-spacing:.06em; color:var(--c-gray-500);
+}
+</style>
+</head>
+<body>
+
+<header class="siteheader">
+  <img src="assets/brand/segu-logo.png" alt="" onerror="this.style.display='none'">
+  Ruleta Gay Amigxs <span class="dot"></span>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <span class="wheel-emoji">🎡🌈</span>
+    <h1 class="rb-text">Ruleta Gay<br>Amigxs</h1>
+    <p class="bajada" id="hero-bajada">Registrate, subite a la ruleta y votá por tus amigues en cada categoría.</p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- PASO 1 — registro -->
+  <section class="card" id="paso-registro">
+    <h2 class="step-title">Sumate a la ruleta</h2>
+    <p class="step-sub">Escribí tu nombre para anotarte. Después vas a votar por perfil en cada categoría.</p>
+
+    <form id="registro-form" novalidate style="margin-top:20px;">
+      <div class="field" id="field-nombre">
+        <label class="field-label" for="in-nombre">Tu nombre</label>
+        <input id="in-nombre" name="nombre" type="text" autocomplete="name" placeholder="Ej. Fran">
+        <p class="err">Escribí tu nombre para anotarte.</p>
+      </div>
+      <button type="submit" class="btn"><span>Subirme a la ruleta</span><span>🎉</span></button>
+    </form>
+
+    <div class="setup-warning" id="setup-warning" hidden>
+      <strong>Ruleta aún no conectada.</strong> Avisale al anfitrión — falta configurar Firebase en
+      <code>assets/js/ruleta-gay.js</code> (instrucciones al inicio de ese archivo).
+    </div>
+  </section>
+
+  <!-- PASO 2 — votación -->
+  <section class="card" id="paso-votacion" hidden>
+    <div class="progreso" id="progreso"></div>
+    <h2 class="step-title" id="cat-titulo" style="margin-top:16px;"></h2>
+    <p class="step-sub">Elegí 1 perfil para esta categoría y ponele puntaje.</p>
+
+    <div class="perfiles-grid" id="perfiles-grid"></div>
+    <p class="perfiles-empty" id="perfiles-empty" hidden>
+      El anfitrión todavía no cargó perfiles de Instagram — esta pantalla se actualiza sola en cuanto los suba.
+    </p>
+
+    <span class="puntaje-label">Puntaje (1 a 7)</span>
+    <div class="puntaje-row" id="puntaje-row"></div>
+
+    <button type="button" class="btn" id="btn-siguiente" style="margin-top:26px;" disabled>
+      <span id="btn-siguiente-label">Siguiente categoría</span><span>→</span>
+    </button>
+  </section>
+
+  <!-- PASO 3 — listo / resultados -->
+  <section class="card" id="paso-listo" hidden>
+    <span class="done-emoji">🎊</span>
+    <h2 class="step-title" style="text-align:center; margin-top:10px;">¡Tu voto ya está en la ruleta!</h2>
+    <p class="step-sub" style="text-align:center;">Gracias por votar, <span id="listo-nombre" class="rb-text" style="font-weight:700;"></span>. Esperá a que el anfitrión active la ruleta para ver a las ganadoras.</p>
+
+    <div id="resultados-lista" style="margin-top:22px;"></div>
+  </section>
+
+</main>
+
+<footer class="sitefooter">
+  <span>SEGU Fitness Club — Quinta 262, Viña del Mar</span>
+  <span>@segufitnesscl</span>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+<script src="assets/js/ruleta-gay.js"></script>
+<script>
+"use strict";
+
+if (!RULETA_READY) document.getElementById("setup-warning").hidden = false;
+
+const STORAGE_KEY = "rg_participante_" + RULETA_CONFIG.eventId;
+
+let participanteId = localStorage.getItem(STORAGE_KEY) || null;
+let participanteNombre = "";
+let perfiles = [];
+let categoriaIdx = 0;
+let seleccionPerfilId = null;
+let seleccionPuntos = null;
+let categoriasVotadas = {};
+
+const $ = (id) => document.getElementById(id);
+
+function mostrarPaso(paso) {
+  $("paso-registro").hidden = paso !== "registro";
+  $("paso-votacion").hidden = paso !== "votacion";
+  $("paso-listo").hidden = paso !== "listo";
+}
+
+/* ---- registro ---- */
+$("registro-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!RULETA_READY) { $("setup-warning").hidden = false; return; }
+
+  const nombre = $("in-nombre").value.trim();
+  const valido = nombre.length >= 2;
+  $("field-nombre").classList.toggle("has-error", !valido);
+  if (!valido) return;
+
+  const btn = e.target.querySelector(".btn");
+  btn.disabled = true;
+  try {
+    participanteId = await rgRegistrarParticipante(nombre);
+    participanteNombre = nombre;
+    localStorage.setItem(STORAGE_KEY, participanteId);
+    iniciarVotacion();
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+/* ---- votación ---- */
+function iniciarVotacion() {
+  categoriaIdx = primeraCategoriaPendiente();
+  if (categoriaIdx === -1) {
+    mostrarPaso("listo");
+    $("listo-nombre").textContent = participanteNombre || "";
+    return;
+  }
+  mostrarPaso("votacion");
+  renderCategoriaActual();
+}
+
+function primeraCategoriaPendiente() {
+  for (let i = 0; i < RULETA_CONFIG.categorias.length; i++) {
+    if (!categoriasVotadas[RULETA_CONFIG.categorias[i].id]) return i;
+  }
+  return -1;
+}
+
+function renderProgreso() {
+  const cont = $("progreso");
+  cont.innerHTML = "";
+  RULETA_CONFIG.categorias.forEach((cat, i) => {
+    const seg = document.createElement("div");
+    seg.className = "seg" + (i < categoriaIdx ? " is-done" : i === categoriaIdx ? " is-current" : "");
+    cont.appendChild(seg);
+  });
+}
+
+function renderCategoriaActual() {
+  const cat = RULETA_CONFIG.categorias[categoriaIdx];
+  seleccionPerfilId = null;
+  seleccionPuntos = null;
+  renderProgreso();
+  $("cat-titulo").textContent = cat.emoji + " " + cat.nombre;
+  renderPerfiles();
+  renderPuntaje();
+  actualizarBotonSiguiente();
+  $("btn-siguiente-label").textContent =
+    categoriaIdx === RULETA_CONFIG.categorias.length - 1 ? "Enviar mi voto" : "Siguiente categoría";
+}
+
+function renderPerfiles() {
+  const grid = $("perfiles-grid");
+  grid.innerHTML = "";
+  $("perfiles-empty").hidden = perfiles.length > 0;
+  perfiles.forEach((pf) => {
+    const label = document.createElement("label");
+    label.className = "perfil-opt";
+    label.innerHTML = `
+      <input type="radio" name="perfil">
+      <span class="avatar">${(pf.handle || "?").replace("@", "").slice(0, 1).toUpperCase()}</span>
+      <span class="info">
+        <span class="handle">${pf.handle}</span><br>
+        <a class="ver" href="${pf.url}" target="_blank" rel="noopener">Ver perfil ↗</a>
+      </span>
+      <span class="check" aria-hidden="true"></span>
+    `;
+    label.querySelector(".ver").addEventListener("click", (ev) => ev.stopPropagation());
+    label.querySelector("input").addEventListener("change", () => {
+      document.querySelectorAll(".perfil-opt").forEach(el => el.classList.remove("is-checked"));
+      label.classList.add("is-checked");
+      seleccionPerfilId = pf.id;
+      actualizarBotonSiguiente();
+    });
+    grid.appendChild(label);
+  });
+}
+
+function renderPuntaje() {
+  const row = $("puntaje-row");
+  row.innerHTML = "";
+  for (let p = RULETA_CONFIG.puntosMin; p <= RULETA_CONFIG.puntosMax; p++) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "pt-btn";
+    btn.textContent = p;
+    btn.addEventListener("click", () => {
+      seleccionPuntos = p;
+      document.querySelectorAll(".pt-btn").forEach(el => el.classList.remove("is-selected"));
+      btn.classList.add("is-selected");
+      actualizarBotonSiguiente();
+    });
+    row.appendChild(btn);
+  }
+}
+
+function actualizarBotonSiguiente() {
+  $("btn-siguiente").disabled = !(seleccionPerfilId && seleccionPuntos);
+}
+
+$("btn-siguiente").addEventListener("click", async () => {
+  const cat = RULETA_CONFIG.categorias[categoriaIdx];
+  const btn = $("btn-siguiente");
+  btn.disabled = true;
+  try {
+    await rgEmitirVoto(participanteId, cat.id, seleccionPerfilId, seleccionPuntos);
+    categoriasVotadas[cat.id] = true;
+    categoriaIdx = primeraCategoriaPendiente();
+    if (categoriaIdx === -1) {
+      mostrarPaso("listo");
+      $("listo-nombre").textContent = participanteNombre || "";
+    } else {
+      renderCategoriaActual();
+    }
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+/* ---- resultados en vivo (se muestran cuando el anfitrión activa la ruleta) ---- */
+function renderResultados(revelado) {
+  const cont = $("resultados-lista");
+  const claves = Object.keys(revelado || {});
+  if (claves.length === 0) {
+    cont.innerHTML = `<p class="espera-pill"><span class="spin"></span> Esperando a que el anfitrión active la ruleta…</p>`;
+    return;
+  }
+  cont.innerHTML = "";
+  RULETA_CONFIG.categorias.forEach((cat) => {
+    const r = revelado[cat.id];
+    if (!r) return;
+    const item = document.createElement("div");
+    item.className = "resultado-item";
+    item.innerHTML = `
+      <span>
+        <span class="nombre-cat">${cat.emoji} ${cat.nombre}</span><br>
+        <span class="ganador">${r.handle || "—"}</span>
+      </span>
+      <span class="pill">${r.total} pts</span>
+    `;
+    cont.appendChild(item);
+  });
+}
+
+/* ---- resumen de sesión (si ya se registró antes en este celular) ---- */
+async function retomarSesion() {
+  if (!RULETA_READY || !participanteId) return;
+  const p = await rgObtenerParticipante(participanteId);
+  if (!p) { participanteId = null; localStorage.removeItem(STORAGE_KEY); return; }
+  participanteNombre = p.nombre;
+  categoriasVotadas = p.categoriasVotadas || {};
+  iniciarVotacion();
+}
+
+if (RULETA_READY) {
+  rgEscucharPerfiles((lista) => {
+    perfiles = lista;
+    if (!$("paso-votacion").hidden) renderPerfiles();
+  });
+  rgEscucharEstado((estado) => renderResultados(estado.revelado));
+  retomarSesion();
+}
+</script>
+</body>
+</html>
